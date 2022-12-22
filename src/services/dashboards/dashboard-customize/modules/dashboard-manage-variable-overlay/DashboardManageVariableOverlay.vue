@@ -76,7 +76,10 @@
                     </template>
                 </p-data-table>
             </div>
-            <dashboard-manage-variable-form v-else />
+            <dashboard-manage-variable-form v-else
+                                            :form-type.sync="overlayState.contentStatus"
+                                            :data.sync="overlayState.selectedVariable"
+            />
         </div>
         <delete-modal :header-title="deleteModalState.headerTitle"
                       :visible.sync="deleteModalState.visible"
@@ -109,7 +112,7 @@ import { i18n } from '@/translations';
 import DeleteModal from '@/common/components/modals/DeleteModal.vue';
 import OverlayPageLayout from '@/common/modules/page-layouts/OverlayPageLayout.vue';
 
-import type { VariableType } from '@/services/dashboards/config';
+import type { VariableType, DashboardVariableSchemaProperty } from '@/services/dashboards/config';
 import DashboardManageVariableForm from '@/services/dashboards/dashboard-customize/modules/dashboard-manage-variable-overlay/modules/DashboardManageVariableForm.vue';
 
 type OverlayStatus = 'LIST' | 'ADD' | 'EDIT';
@@ -169,6 +172,14 @@ export default defineComponent({
                 ADD: i18n.t('DASHBOARDS.CUSTOMIZE.VARIABLES.ADD'),
                 EDIT: i18n.t('DASHBOARDS.CUSTOMIZE.VARIABLES.SUB_TITLE_EDIT'),
             })),
+            selectedVariable: {
+                variable_type: 'CUSTOM',
+                name: '',
+                selection_type: 'MULTI',
+                options: [
+                    { value: '' },
+                ],
+            } as DashboardVariableSchemaProperty,
         });
 
         const deleteModalState = reactive({
@@ -181,6 +192,9 @@ export default defineComponent({
         const variableTypeBadgeStyleFormatter = (type: VariableType) => {
             if (type === 'MANAGED') return 'gray';
             return 'primary';
+        };
+        const backToVariableList = () => {
+            overlayState.contentStatus = 'LIST';
         };
         /* EVENT */
         const handleOpenDeleteModal = () => {
@@ -212,6 +226,7 @@ export default defineComponent({
             variableTypeBadgeStyleFormatter,
             handleEditVariable,
             handleDeleteVariable,
+            backToVariableList,
         };
     },
 });

@@ -1,6 +1,6 @@
 import Vue from 'vue';
 
-import VueGtm from '@gtm-support/vue2-gtm';
+import VueGtm from '@gtm-support/vue-gtm';
 
 import config from '@/lib/config';
 

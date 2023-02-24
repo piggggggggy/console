@@ -57,13 +57,15 @@
             />
 
             <p-tab v-if="item"
+                   v-model:active-tab="singleItemTabState.activeTab"
                    :tabs="singleItemTabState.tabs"
-                   :active-tab.sync="singleItemTabState.activeTab"
                    @change="onChangeTab"
             >
-                <keep-alive>
-                    <router-view />
-                </keep-alive>
+                <router-view v-slot="{ Component }">
+                    <keep-alive>
+                        <component :is="Component" />
+                    </keep-alive>
+                </router-view>
                 <template #extra="tab">
                     <p-badge v-if="tab.label === $t('PROJECT.DETAIL.TAB_ALERT') && counts[ALERT_STATE.TRIGGERED] !== 0"
                              style-type="primary3"
@@ -76,12 +78,12 @@
             </p-tab>
         </p-data-loader>
 
-        <p-button-modal :header-title="headerTitle"
+        <p-button-modal v-model:visible="projectDeleteFormVisible"
+                        :header-title="headerTitle"
                         :centered="true"
                         size="sm"
                         :fade="true"
                         :backdrop="true"
-                        :visible.sync="projectDeleteFormVisible"
                         :theme-color="themeColor"
                         :loading="modalLoading"
                         @confirm="projectDeleteFormConfirm"
@@ -94,12 +96,12 @@
         </p-button-modal>
 
         <project-form-modal v-if="projectEditFormVisible"
-                            :visible.sync="projectEditFormVisible"
+                            v-model:visible="projectEditFormVisible"
                             :project-group-id="projectGroupId"
                             :project="item"
                             @complete="onProjectFormComplete"
         />
-        <maintenance-window-form-modal :visible.sync="maintenanceWindowFormVisible"
+        <maintenance-window-form-modal v-model:visible="maintenanceWindowFormVisible"
                                        :project-id="projectId"
                                        @confirm="onCreateMaintenanceWindow"
         />
@@ -110,8 +112,8 @@
 import {
     computed, getCurrentInstance, onUnmounted, reactive, toRefs, watch,
 } from 'vue';
-import type { TranslateResult } from 'vue-i18n';
 import type { Vue } from 'vue/types/vue';
+import type { TranslateResult } from 'vue-i18n';
 
 import {
     PTab, PHeading, PButtonModal,

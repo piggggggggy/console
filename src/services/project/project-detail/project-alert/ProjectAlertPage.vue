@@ -15,11 +15,15 @@
             </p-button>
         </div>
         <p-button-tab v-else
+                      v-model:active-tab="tabState.activeTab"
                       :tabs="tabState.tabs"
-                      :active-tab.sync="tabState.activeTab"
                       @change="onChangeTab"
         >
-            <keep-alive><router-view /></keep-alive>
+            <router-view v-slot="{ Component }">
+                <keep-alive>
+                    <component :is="Component" />
+                </keep-alive>
+            </router-view>
         </p-button-tab>
     </div>
 </template>

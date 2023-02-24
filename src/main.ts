@@ -27,7 +27,6 @@ pinia.use(resetStore);
 const app = createApp({
     pinia,
     i18n,
-    router: SpaceRouter.router,
     ...App,
 });
 
@@ -36,6 +35,7 @@ app.use(VTooltip, { defaultClass: 'p-tooltip', defaultBoundariesElement: documen
 app.use(PortalVue);
 app.use(store);
 app.use(PiniaVuePlugin);
+app.use({ router: SpaceRouter.router });
 
 directive(Vue);
 
@@ -47,5 +47,3 @@ app.use(SpaceDesignSystem, { vueI18n: i18n });
     await siteInit();
     app.mount('##app');
 })();
-
-

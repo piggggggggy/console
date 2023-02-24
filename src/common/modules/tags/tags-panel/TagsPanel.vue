@@ -24,7 +24,7 @@
                       :col-copy="true"
                       beautify-text
         >
-            <template v-for="(_, slot) of $scopedSlots"
+            <template v-for="(_, slot) of $slots"
                       #[slot]="scope"
             >
                 <slot :name="slot"
@@ -232,7 +232,7 @@ export default {
 .slide-up-leave-active {
     transition: all 0.3s ease-out;
 }
-.slide-up-enter, .slide-up-leave-to {
+.slide-up-enter-from, .slide-up-leave-to {
     transform: translateY(100px);
     opacity: 0;
 }

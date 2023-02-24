@@ -5,19 +5,19 @@
                    :total-count="totalCount"
                    use-total-count
         />
-        <p-toolbox search-type="query"
+        <p-toolbox v-model:search-text="searchText"
+                   search-type="query"
                    searchable
                    :pagination-visible="false"
                    :page-size-changeable="false"
-                   :search-text.sync="searchText"
                    :key-item-sets="handlerState.keyItemSets"
                    :value-handler-map="handlerState.valueHandlerMap"
                    @change="handleChange"
                    @refresh="handleChange()"
         >
             <template #left-area>
-                <cloud-service-history-date-select-dropdown :selected-year.sync="selectedYear"
-                                                            :selected-month.sync="selectedMonth"
+                <cloud-service-history-date-select-dropdown v-model:selected-year="selectedYear"
+                                                            v-model:selected-month="selectedMonth"
                 />
             </template>
         </p-toolbox>
@@ -77,9 +77,9 @@
         </p-data-loader>
         <transition name="slide-up">
             <cloud-service-history-detail-overlay v-if="showDetailOverlay"
+                                                  v-model:selected-history-item="selectedHistoryItem"
                                                   :loading="loading"
                                                   :history-items="items"
-                                                  :selected-history-item.sync="selectedHistoryItem"
                                                   :selected-key-name="selectedKeyName"
                                                   :total-count="totalCount"
                                                   :provider="provider"
@@ -417,7 +417,7 @@ export default {
 .slide-up-leave-active {
     transition: all 0.3s ease-out;
 }
-.slide-up-enter, .slide-up-leave-to {
+.slide-up-enter-from, .slide-up-leave-to {
     transform: translateY(100px);
     opacity: 0;
 }

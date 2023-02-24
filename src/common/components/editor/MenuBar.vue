@@ -176,7 +176,7 @@ import {
 import {
     PDivider, PI, PIconButton, PPopover, PSelectDropdown,
 } from '@spaceone/design-system';
-import type { Editor } from '@tiptap/vue-2';
+import type { Editor } from '@tiptap/vue-3';
 
 import { i18n } from '@/translations';
 

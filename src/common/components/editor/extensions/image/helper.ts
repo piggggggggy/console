@@ -1,4 +1,4 @@
-import type { Editor } from '@tiptap/vue-2';
+import type { Editor } from '@tiptap/vue-3';
 
 import type { Attachment } from '@/common/components/editor/extensions/image/type';
 

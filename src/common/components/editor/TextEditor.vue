@@ -10,12 +10,11 @@
     </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 
 import {
-    defineComponent, onBeforeUnmount, onMounted, reactive, toRefs, watch,
+    watch,
 } from 'vue';
-import type { PropType, SetupContext } from 'vue';
 
 import { Color } from '@tiptap/extension-color';
 import Link from '@tiptap/extension-link';
@@ -23,7 +22,8 @@ import TextAlign from '@tiptap/extension-text-align';
 import TextStyle from '@tiptap/extension-text-style';
 import Underline from '@tiptap/extension-underline';
 import StarterKit from '@tiptap/starter-kit';
-import { Editor, EditorContent } from '@tiptap/vue-2';
+import type { Editor } from '@tiptap/vue-3';
+import { EditorContent, useEditor } from '@tiptap/vue-3';
 
 import { createImageExtension } from '@/common/components/editor/extensions/image';
 import { getAttachments, setAttachmentsToContents } from '@/common/components/editor/extensions/image/helper';
@@ -36,91 +36,58 @@ interface Props {
     value: string;
     imageUploader: ImageUploader;
     attachments: Attachment[];
+    invalid: boolean;
 }
 
-export default defineComponent<Props>({
-    name: 'TextEditor',
-    components: {
-        MenuBar,
-        EditorContent,
-    },
-    model: {
-        prop: 'value',
-        event: 'update:value',
-    },
-    props: {
-        value: {
-            type: String,
-            default: '',
-        },
-        imageUploader: {
-            type: Function as PropType<ImageUploader>,
-            default: () => Promise.resolve(''),
-        },
-        attachments: {
-            type: Array as PropType<Attachment[]>,
-            default: () => [],
-        },
-        invalid: {
-            type: Boolean,
-            default: false,
-        },
-    },
-    setup(props, { emit }: SetupContext) {
-        loadMonospaceFonts();
+interface EmitFn {
+    (e: 'update:value', value: string): void;
+    (e: 'update:attachments', value: Attachment[]): void;
+}
 
-        const state = reactive({
-            editor: null as null|Editor,
-        });
+const props = defineProps<Props>();
+const emit = defineEmits<EmitFn>();
 
-        onMounted(() => {
-            state.editor = new Editor({
-                content: setAttachmentsToContents(props.value, props.attachments),
-                extensions: [
-                    StarterKit.configure({
-                        heading: {
-                            levels: [1, 2, 3],
-                        },
-                        code: {
-                            HTMLAttributes: {
-                                class: 'inline-code',
-                            },
-                        },
-                    }),
-                    Underline,
-                    Link,
-                    TextStyle,
-                    Color,
-                    TextAlign.configure({
-                        types: ['heading', 'paragraph'],
-                    }),
-                    createImageExtension(props.imageUploader),
-                ],
-                onUpdate: () => {
-                    emit('update:value', state.editor?.getHTML() ?? '');
-                    emit('update:attachments', state.editor ? getAttachments(state.editor as Editor) : []);
+loadMonospaceFonts();
+
+const editor = useEditor({
+    content: setAttachmentsToContents(props.value, props.attachments),
+    extensions: [
+        StarterKit.configure({
+            heading: {
+                levels: [1, 2, 3],
+            },
+            code: {
+                HTMLAttributes: {
+                    class: 'inline-code',
                 },
-            });
-        });
-
-        onBeforeUnmount(() => {
-            if (state.editor) state.editor.destroy();
-        });
-
-        watch([() => props.value, () => props.attachments], ([value, attachments], prev) => {
-            if (!state.editor) return;
-            const isSame = state.editor.getHTML() === value;
-            if (isSame) return;
-            let newContents = value;
-            if (attachments !== prev[1]) newContents = setAttachmentsToContents(value, attachments);
-            state.editor.commands.setContent(newContents, false);
-        });
-
-        return {
-            ...toRefs(state),
-        };
+            },
+        }),
+        Underline,
+        Link,
+        TextStyle,
+        Color,
+        TextAlign.configure({
+            types: ['heading', 'paragraph'],
+        }),
+        createImageExtension(props.imageUploader),
+    ],
+    onUpdate: () => {
+        emit('update:value', editor.value?.getHTML() ?? '');
+        emit('update:attachments', editor?.value ? getAttachments(editor as Editor) : []);
     },
 });
+
+watch([() => props.value, () => props.attachments], ([value, attachments], prev) => {
+    if (!editor) return;
+    const isSame = editor.value?.getHTML() === value;
+    if (isSame) return;
+    let newContents = value;
+    if (attachments !== prev[1]) newContents = setAttachmentsToContents(value, attachments);
+    editor.value?.commands.setContent(newContents, false);
+});
+
+
+
 </script>
 
 <style lang="postcss">

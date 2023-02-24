@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import Fragment from 'vue-fragment';
+import { createApp } from 'vue/dist/vue.esm-bundler';
 
 import LottieVuePlayer from '@lottiefiles/vue-lottie-player';
 import SpaceDesignSystem from '@spaceone/design-system';
@@ -21,37 +21,31 @@ import '@/styles/style.pcss';
 import '@spaceone/design-system/css/light-style.css';
 import '@spaceone/design-system/dist/style.css';
 
+const pinia = createPinia();
+pinia.use(resetStore);
+
+const app = createApp({
+    pinia,
+    i18n,
+    router: SpaceRouter.router,
+    ...App,
+});
+
 /** ********** SET VUE PLUGINS ************** */
-Vue.use(Fragment.Plugin);
-Vue.use(VTooltip, { defaultClass: 'p-tooltip', defaultBoundariesElement: document.body });
-Vue.use(PortalVue);
-Vue.use(PiniaVuePlugin);
+app.use(VTooltip, { defaultClass: 'p-tooltip', defaultBoundariesElement: document.body });
+app.use(PortalVue);
+app.use(store);
+app.use(PiniaVuePlugin);
 
 directive(Vue);
 
-Vue.use(LottieVuePlayer);
-Vue.use(SpaceDesignSystem, { vueI18n: i18n });
-
-/** ********** SET VUE CONFIG ************** */
-
-Vue.config.productionTip = import.meta.env.DEV;
-
-const pinia = createPinia();
-pinia.use(resetStore);
+app.use(LottieVuePlayer);
+app.use(SpaceDesignSystem, { vueI18n: i18n });
 
 /** ********** INITIALIZE ************** */
 (async () => {
     await siteInit();
-
-    new Vue({
-        el: '#app',
-        router: SpaceRouter.router,
-        i18n,
-        store,
-        components: {
-            App,
-        },
-        template: '<App/>',
-        pinia,
-    });
+    app.mount('##app');
 })();
+
+

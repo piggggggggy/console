@@ -1,17 +1,19 @@
 <template>
     <div class="integration-sub-menu">
-        <p-tab :tabs="tabs"
-               :active-tab.sync="activeTab"
+        <p-tab v-model:active-tab="activeTab"
+               :tabs="tabs"
         >
             <template v-for="({title, sub_menu}, index) in integrationMenus"
+                      :key="`${title}-${index}`"
                       #[title]
             >
-                <div :key="`${title}-${index}`"
-                     class="integration-tab-content-wrapper"
+                <div
+                    class="integration-tab-content-wrapper"
                 >
-                    <template v-for="(menu, idx) in sub_menu">
-                        <g-n-b-sub-menu :key="`extra-${menu.label}-${idx}`"
-                                        :label="menu.label"
+                    <template v-for="(menu, idx) in sub_menu"
+                              :key="`extra-${menu.label}-${idx}`"
+                    >
+                        <g-n-b-sub-menu :label="menu.label"
                                         :href="menu.link"
                                         @navigate="hideMenu"
                         >

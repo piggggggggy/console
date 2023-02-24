@@ -34,13 +34,14 @@
                 </span>
                 <span class="texts">
                     <template v-if="item.parents">
-                        <template v-for="(parent, pIdx) in item.parents">
-                            <text-highlighting :key="`parent-${parent.label}-${pIdx}`"
-                                               class="text-item"
+                        <template v-for="(parent, pIdx) in item.parents"
+                                  :key="`parent-${parent.label}-${pIdx}`"
+                        >
+                            <text-highlighting class="text-item"
                                                :term="inputText"
                                                :text="parent.label"
                             />
-                            <span :key="`arrow-${pIdx}`">
+                            <span>
                                 <p-i name="ic_chevron-left-thin"
                                      width="1rem"
                                      height="1rem"
@@ -63,7 +64,7 @@
                 </span>
             </p-tooltip>
         </template>
-        <template v-for="(_, slot) of $scopedSlots"
+        <template v-for="(_, slot) of $slots"
                   #[slot]="scope"
         >
             <slot :name="slot"

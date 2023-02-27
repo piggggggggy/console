@@ -1,6 +1,5 @@
-import type { ComputedRef } from 'vue';
 import { computed, getCurrentInstance } from 'vue';
-import type { Vue } from 'vue/types/vue';
+import type { ComputedRef, Vue } from 'vue';
 
 import { SpaceConnector } from '@cloudforet/core-lib/space-connector';
 

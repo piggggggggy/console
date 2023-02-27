@@ -1,4 +1,4 @@
-import type { RouteConfig } from 'vue-router';
+import type { RouteRecordRaw } from 'vue-router';
 
 import { ACCESS_LEVEL } from '@/lib/access-control/config';
 
@@ -90,4 +90,4 @@ export default [
             accessLevel: ACCESS_LEVEL.EXCLUDE_AUTH,
         },
     },
-] as RouteConfig[];
+] as RouteRecordRaw[];

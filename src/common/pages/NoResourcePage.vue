@@ -26,8 +26,8 @@
 import {
     computed, getCurrentInstance, reactive, toRefs,
 } from 'vue';
-import type { RouteConfig } from 'vue-router';
 import type { Vue } from 'vue/types/vue';
+import type { RouteRecordRaw } from 'vue-router';
 
 import { PButton } from '@spaceone/design-system';
 
@@ -45,7 +45,7 @@ export default {
         const state = reactive({
             serviceRoute: computed(() => vm.$route.matched[vm.$route.matched.length - 2]),
             mainLabel: computed(() => {
-                const meta: RouteConfig['meta'] = state.serviceRoute.meta;
+                const meta: RouteRecordRaw['meta'] = state.serviceRoute.meta;
                 if (!meta) return '';
                 if (typeof meta.label === 'string') return meta.label;
                 if (typeof meta.label === 'function') return meta.label(vm.$route);

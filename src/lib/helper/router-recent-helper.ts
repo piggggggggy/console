@@ -1,4 +1,4 @@
-import type { Route } from 'vue-router';
+import type { RouteLocationNormalized } from 'vue-router';
 
 import type { RecentConfig } from '@/store/modules/recent/type';
 import { RECENT_TYPE } from '@/store/modules/recent/type';
@@ -10,7 +10,7 @@ import { ASSET_INVENTORY_ROUTE } from '@/services/asset-inventory/route-config';
 import { DASHBOARDS_ROUTE } from '@/services/dashboards/route-config';
 import { PROJECT_ROUTE } from '@/services/project/route-config';
 
-export const getRecentConfig = (to: Route): RecentConfig | undefined => {
+export const getRecentConfig = (to: RouteLocationNormalized): RecentConfig | undefined => {
     /* DASHBOARD */
     if (to.name === DASHBOARDS_ROUTE.PROJECT.DETAIL._NAME || to.name === DASHBOARDS_ROUTE.WORKSPACE.DETAIL._NAME) {
         const dashboardId = to?.params?.dashboardId;

@@ -1,6 +1,5 @@
-import Vue from 'vue';
-import type { RouteConfig } from 'vue-router';
-import VueRouter from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
+import type { RouteRecordRaw, Router } from 'vue-router';
 
 import { SpaceConnector } from '@cloudforet/core-lib/space-connector';
 
@@ -19,15 +18,13 @@ const CHUNK_LOAD_REFRESH_STORAGE_KEY = 'SpaceRouter/ChunkLoadFailRefreshed';
 const getCurrentTime = (): number => Math.floor(Date.now() / 1000);
 
 export class SpaceRouter {
-    static router: VueRouter;
+    static router: Router;
 
-    static init(routes: RouteConfig[]) {
+    static init(routes: RouteRecordRaw[]) {
         if (SpaceRouter.router) throw new Error('Router init failed: Already initiated.');
 
-        Vue.use(VueRouter);
-
-        SpaceRouter.router = new VueRouter({
-            mode: 'history',
+        SpaceRouter.router = createRouter({
+            history: createWebHistory(),
             linkActiveClass: 'open active',
             routes,
         });
@@ -48,7 +45,7 @@ export class SpaceRouter {
             }
         });
 
-        SpaceRouter.router.onReady(() => {
+        SpaceRouter.router.isReady().then(() => {
             localStorage.setItem(CHUNK_LOAD_REFRESH_STORAGE_KEY, '');
         });
 

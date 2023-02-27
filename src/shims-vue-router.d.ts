@@ -1,31 +1,36 @@
+import type { Vue } from 'vue';
+import type { RouteRecordNormalized } from 'vue-router';
+
 import type { AccessInfo } from '@/lib/access-control/config';
 
 declare module 'vue-router' {
     import type { TranslateResult } from 'vue-i18n';
   import type {
-      RouteConfigMultipleViews as OriginRouteConfigMultipleViews,
-      RouteConfigSingleView as OriginRouteConfigSingleView,
-      Route as OriginRoute,
+      RouteRecordMultipleViews as OriginRouteRecordMultipleViews,
+      RouteRecordSingleView as OriginRouteRecordSingleView,
+      // Route as OriginRoute,
       RouteRecord as OriginRouteRecord,
-  } from 'vue-router/types/router';
-import {
-    VueRouter,
-} from 'vue-router/types/router';
+      RouteMeta as OriginRouteMeta,
+      Router as OriginRouter,
+      RouteLocationNormalized as OriginRouteLocationNormalized,
+      // RouteRecordName as OriginRouteRecordName,
+      // VueRouter,
+  } from 'vue-router/dist/vue-router';
 
     import type { AccessLevel } from '@/lib/access-control/config';
 
     import type { Breadcrumb } from '@/common/modules/page-layouts/type';
 
   interface RouteLabelFormatter {
-    (route: Route): TranslateResult|TranslateResult[];
+    (route: RouteLocationNormalized): TranslateResult|TranslateResult[];
   }
   interface RouteTranslationIdFormatter {
-    (route: Route): string|string[];
+    (route: RouteLocationNormalized): string|string[];
   }
   interface RouteBreadcrumbsFormatter {
-      (route: Route): Breadcrumb[];
+      (route: RouteLocationNormalized): Breadcrumb[];
   }
-  interface RouteMeta {
+  interface RouteMeta extends OriginRouteMeta {
     lnbVisible?: boolean;
     menuId?: string;
     label?: string|RouteLabelFormatter;
@@ -36,25 +41,31 @@ import {
     accessLevel?: AccessLevel;
     accessInfo?: AccessInfo;
   }
-  export interface RouteConfigSingleView extends OriginRouteConfigSingleView {
+  export interface RouteRecordSingleView extends OriginRouteRecordSingleView {
       meta?: RouteMeta;
-      children?: RouteConfig[];
+      children?: RouteRecordRaw[];
   }
-  export interface RouteConfigMultipleViews extends OriginRouteConfigMultipleViews {
+  export interface RouteRecordMultipleViews extends OriginRouteRecordMultipleViews {
       meta?: RouteMeta;
-      children?: RouteConfig[];
+      children?: RouteRecordRaw[];
   }
-
-  // export
-  export interface RouteRecord extends OriginRouteRecord {
-    meta: RouteMeta;
+  // export interface RouteRecord extends OriginRouteRecord {
+  //     meta: RouteMeta;
+  // }
+  export type RouteRecordRaw = RouteRecordSingleView | RouteRecordMultipleViews;
+  // export interface Route extends OriginRoute {
+  //   meta?: RouteMeta;
+  //   matched: RouteRecord[];
+  // }
+  export interface RouteLocationNormalized extends OriginRouteLocationNormalized {
+      meta?: RouteMeta;
+      name: string;
+      matched: RouteRecordNormalized[];
   }
-  export type RouteConfig = RouteConfigSingleView | RouteConfigMultipleViews;
-  export interface Route extends OriginRoute {
-    meta?: RouteMeta;
-    matched: RouteRecord[];
+  export interface Router extends OriginRouter {
+      app: Vue;
   }
-  export default VueRouter;
+  // export default VueRouter;
   export {
       RouterMode,
       RawLocation,
@@ -66,5 +77,5 @@ import {
       NavigationGuardNext,
       NavigationFailureType,
       NavigationFailure,
-  } from 'vue-router/types/router';
+  } from 'vue-router/dist/vue-router';
 }

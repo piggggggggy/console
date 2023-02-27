@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { createApp } from 'vue/dist/vue.esm-bundler';
+import VueRouter from 'vue-router';
 
 import LottieVuePlayer from '@lottiefiles/vue-lottie-player';
 import SpaceDesignSystem from '@spaceone/design-system';
@@ -24,7 +25,7 @@ import '@spaceone/design-system/dist/style.css';
 const pinia = createPinia();
 pinia.use(resetStore);
 
-const app = createApp({
+export const app = createApp({
     pinia,
     i18n,
     ...App,
@@ -35,7 +36,6 @@ app.use(VTooltip, { defaultClass: 'p-tooltip', defaultBoundariesElement: documen
 app.use(PortalVue);
 app.use(store);
 app.use(PiniaVuePlugin);
-app.use({ router: SpaceRouter.router });
 
 directive(Vue);
 
@@ -45,5 +45,7 @@ app.use(SpaceDesignSystem, { vueI18n: i18n });
 /** ********** INITIALIZE ************** */
 (async () => {
     await siteInit();
+    app.use({ router: SpaceRouter.router });
+    SpaceRouter.router.app = app;
     app.mount('##app');
 })();

@@ -1,31 +1,29 @@
 <template>
-    <fragment>
-        <div class="cloud-service-usage-overview">
-            <header>
-                {{ $t('INVENTORY.CLOUD_SERVICE.MAIN.USAGE_OVERVIEW') }}
-                <p-button style-type="tertiary"
-                          size="sm"
-                          :disabled="schemaLoading || !chartWidgetSchemaList.length"
-                          @click="handleClickShowAll"
-                >
-                    {{ $t('INVENTORY.CLOUD_SERVICE.MAIN.SHOW_CHARTS') }}
-                </p-button>
-            </header>
-            <cloud-service-usage-overview-summary :schema-loading="schemaLoading"
-                                                  :data-loading="dataLoading"
-                                                  :data-list="summaryDataList"
-                                                  :widget-schema-list="summaryWidgetSchemaList"
-                                                  :cloud-service-type-id="cloudServiceTypeId"
-            />
-        </div>
-        <cloud-service-usage-overview-detail-modal v-model="usageOverviewDetailModalVisible"
-                                                   :schema-list="widgetSchemaList"
-                                                   :summary-data-list="summaryDataList"
-                                                   :cloud-service-type-info="cloudServiceTypeInfo"
-                                                   :filters="filters"
-                                                   :period="period"
+    <div class="cloud-service-usage-overview">
+        <header>
+            {{ $t('INVENTORY.CLOUD_SERVICE.MAIN.USAGE_OVERVIEW') }}
+            <p-button style-type="tertiary"
+                      size="sm"
+                      :disabled="schemaLoading || !chartWidgetSchemaList.length"
+                      @click="handleClickShowAll"
+            >
+                {{ $t('INVENTORY.CLOUD_SERVICE.MAIN.SHOW_CHARTS') }}
+            </p-button>
+        </header>
+        <cloud-service-usage-overview-summary :schema-loading="schemaLoading"
+                                              :data-loading="dataLoading"
+                                              :data-list="summaryDataList"
+                                              :widget-schema-list="summaryWidgetSchemaList"
+                                              :cloud-service-type-id="cloudServiceTypeId"
         />
-    </fragment>
+    </div>
+    <cloud-service-usage-overview-detail-modal v-model="usageOverviewDetailModalVisible"
+                                               :schema-list="widgetSchemaList"
+                                               :summary-data-list="summaryDataList"
+                                               :cloud-service-type-info="cloudServiceTypeInfo"
+                                               :filters="filters"
+                                               :period="period"
+    />
 </template>
 
 <script lang="ts">

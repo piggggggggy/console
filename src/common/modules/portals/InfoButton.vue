@@ -1,30 +1,28 @@
 <template>
-    <fragment>
-        <component :is="tag"
-                   v-bind="childProps"
-                   class="info-button"
-                   @click.stop="href ? undefined : $store.dispatch('display/showInfo')"
-        >
-            <p-i name="ic_info-circle"
-                 width="0.875rem"
-                 height="0.875rem"
-                 color="inherit"
-            />
-            <span class="text">
-                <slot name="button">{{ $t('COMMON.INFO_BUTTON.INFO') }}</slot>
-            </span>
-        </component>
-        <portal to="info-title">
-            <slot name="title" />
-        </portal>
-        <portal to="info-contents">
-            <div class="info-contents"
-                 :class="{'no-title': !$scopedSlots.title }"
-            >
-                <slot name="contents" />
-            </div>
-        </portal>
-    </fragment>
+    <component :is="tag"
+               v-bind="childProps"
+               class="info-button"
+               @click.stop="href ? undefined : $store.dispatch('display/showInfo')"
+    >
+        <p-i name="ic_info-circle"
+             width="0.875rem"
+             height="0.875rem"
+             color="inherit"
+        />
+        <span class="text">
+            <slot name="button">{{ $t('COMMON.INFO_BUTTON.INFO') }}</slot>
+        </span>
+    </component>
+<!--        <portal to="info-title">-->
+<!--            <slot name="title" />-->
+<!--        </portal>-->
+<!--        <portal to="info-contents">-->
+<!--            <div class="info-contents"-->
+<!--                 :class="{'no-title': !$scopedSlots.title }"-->
+<!--            >-->
+<!--                <slot name="contents" />-->
+<!--            </div>-->
+<!--        </portal>-->
 </template>
 
 <script lang="ts">
@@ -36,6 +34,7 @@ import {
     toRefs, watch,
 } from 'vue';
 import type { Vue } from 'vue/types/vue';
+import { useI18n } from 'vue-i18n';
 
 import { PI, PAnchor } from '@spaceone/design-system';
 
@@ -59,6 +58,8 @@ export default {
         },
     },
     setup(props) {
+        const { t } = useI18n();
+
         const vm = getCurrentInstance()?.proxy as Vue;
         const state = reactive({
             tag: computed(() => (props.href ? PAnchor : 'span')),
@@ -86,6 +87,7 @@ export default {
         });
         return {
             ...toRefs(state),
+            t,
         };
     },
 };

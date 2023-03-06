@@ -1,5 +1,4 @@
 <template>
-    <fragment />
 </template>
 
 <script lang="ts">

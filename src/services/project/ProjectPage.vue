@@ -1,125 +1,123 @@
 <template>
-    <fragment>
-        <p-vertical-page-layout>
-            <template #sidebar>
-                <div class="sidebar-container">
-                    <div class="sidebar-item-wrapper">
-                        <sidebar-title :title="$t('PROJECT.LANDING.FAVORITES')">
-                            <template #extra>
-                                <span class="count">({{ state.favoriteItems.length }})</span>
-                            </template>
-                        </sidebar-title>
-                        <favorite-list :items="state.favoriteItems"
-                                       :before-route="beforeFavoriteRoute"
-                                       @delete="onFavoriteDelete"
-                        >
-                            <template #icon="{item}">
-                                <p-i :name="item.itemType === FAVORITE_TYPE.PROJECT ? 'ic_document-filled' : 'ic_folder-filled'"
-                                     width="1rem"
-                                     height="1rem"
-                                     color="inherit inherit"
-                                />
-                            </template>
-                        </favorite-list>
-                    </div>
-
-                    <div class="sidebar-item-wrapper">
-                        <sidebar-title :title="$t('PROJECT.LANDING.SEARCH')" />
-                        <project-search />
-                    </div>
-
-                    <div class="sidebar-item-wrapper">
-                        <project-tree :init-group-id="state.initGroupId"
-                                      :manage-disabled="!state.hasManagePermission"
-                        />
-                    </div>
-                </div>
-            </template>
-            <template #default>
-                <div class="page-wrapper">
-                    <div class="parents-info">
-                        <span class="group-name">
-                            <p-breadcrumbs :routes="state.projectGroupNavigation"
-                                           @click="onProjectGroupNavClick"
-                            />
-                        </span>
-                    </div>
-                    <p-heading :title="storeState.groupName ? storeState.groupName : $t('PROJECT.LANDING.ALL_PROJECT')"
-                               use-total-count
-                               :total-count="storeState.projectCount || 0"
-                    >
-                        <template #title-right-extra>
-                            <div class="favorite-btn-wrapper">
-                                <favorite-button v-if="storeState.groupId && !state.isPermissionDenied"
-                                                 :favorite-items="state.favoriteItems"
-                                                 :item-id="storeState.groupId"
-                                                 :favorite-type="FAVORITE_TYPE.PROJECT_GROUP"
-                                />
-                            </div>
-                            <div class="top-button-box">
-                                <div>
-                                    <p-button v-if="!storeState.groupId && state.hasRootProjectGroupManagePermission"
-                                              style-type="secondary"
-                                              icon-left="ic_plus_bold"
-                                              :disabled="!state.hasManagePermission"
-                                              @click="openProjectGroupCreateForm"
-                                    >
-                                        {{ $t('PROJECT.LANDING.CREATE_GROUP') }}
-                                    </p-button>
-                                    <p-select-dropdown v-if="storeState.groupId && state.hasManagePermission && !state.isPermissionDenied"
-                                                       :items="state.settingMenu"
-                                                       style-type="icon-button"
-                                                       button-icon="ic_settings-filled"
-                                                       class="settings-button"
-                                                       @select="onSelectSettingDropdown"
-                                    />
-                                    <div v-if="storeState.groupId && state.hasManagePermission && !state.isPermissionDenied"
-                                         v-tooltip.top="$t('PROJECT.LANDING.MANAGE_PROJECT_GROUP_MEMBER')"
-                                         class="project-group-member-button"
-                                         :group-id="storeState.groupId"
-                                         @click="openProjectGroupMemberPage"
-                                    >
-                                        <div>
-                                            <p-i name="ic_users"
-                                                 width="1rem"
-                                                 height="1rem"
-                                                 color="inherit transparent"
-                                            />
-                                            <span class="text">{{ state.groupMemberCount || 0 }}</span>
-                                        </div>
-                                    </div>
-                                    <p-button v-if="storeState.groupId && state.hasManagePermission && !state.isPermissionDenied"
-                                              style-type="primary"
-                                              icon-left="ic_plus_bold"
-                                              @click="openProjectForm"
-                                    >
-                                        <div class="truncate">
-                                            {{ $t('PROJECT.LANDING.CREATE_PROJECT') }}
-                                        </div>
-                                    </p-button>
-                                </div>
-                            </div>
+    <p-vertical-page-layout>
+        <template #sidebar>
+            <div class="sidebar-container">
+                <div class="sidebar-item-wrapper">
+                    <sidebar-title :title="$t('PROJECT.LANDING.FAVORITES')">
+                        <template #extra>
+                            <span class="count">({{ favoriteItems.length }})</span>
                         </template>
-                    </p-heading>
-                    <project-card-list class="card-container"
-                                       :parent-groups="storeState.parentGroups"
-                                       :manage-disabled="!state.hasRootProjectGroupManagePermission"
-                                       @create-project-group="openProjectGroupCreateForm"
-                    />
+                    </sidebar-title>
+                    <favorite-list :items="favoriteItems"
+                                   :before-route="beforeFavoriteRoute"
+                                   @delete="onFavoriteDelete"
+                    >
+                        <template #icon="{item}">
+                            <p-i :name="item.itemType === FAVORITE_TYPE.PROJECT ? 'ic_document-filled' : 'ic_folder-filled'"
+                                 width="1rem"
+                                 height="1rem"
+                                 color="inherit inherit"
+                            />
+                        </template>
+                    </favorite-list>
+                </div>
 
-                    <project-group-form-modal v-if="storeState.projectGroupFormVisible" />
+                <div class="sidebar-item-wrapper">
+                    <sidebar-title :title="$t('PROJECT.LANDING.SEARCH')" />
+                    <project-search />
+                </div>
 
-                    <project-group-delete-check-modal v-if="storeState.projectGroupDeleteCheckModalVisible" />
-
-                    <project-group-member :visible="!!(state.groupMemberPageVisible && storeState.groupId)"
-                                          :group-id="storeState.groupId"
-                                          :manage-disabled="!state.hasManagePermission"
-                                          @close="state.groupMemberPageVisible = false"
+                <div class="sidebar-item-wrapper">
+                    <project-tree :init-group-id="initGroupId"
+                                  :manage-disabled="!hasManagePermission"
                     />
                 </div>
-            </template>
-        </p-vertical-page-layout>
-    </fragment>
+            </div>
+        </template>
+        <template #default>
+            <div class="page-wrapper">
+                <div class="parents-info">
+                    <span class="group-name">
+                        <p-breadcrumbs :routes="projectGroupNavigation"
+                                       @click="onProjectGroupNavClick"
+                        />
+                    </span>
+                </div>
+                <p-heading :title="storeState.groupName ? storeState.groupName : $t('PROJECT.LANDING.ALL_PROJECT')"
+                           use-total-count
+                           :total-count="storeState.projectCount || 0"
+                >
+                    <template #title-right-extra>
+                        <div class="favorite-btn-wrapper">
+                            <favorite-button v-if="storeState.groupId && !isPermissionDenied"
+                                             :favorite-items="favoriteItems"
+                                             :item-id="storeState.groupId"
+                                             :favorite-type="FAVORITE_TYPE.PROJECT_GROUP"
+                            />
+                        </div>
+                        <div class="top-button-box">
+                            <div>
+                                <p-button v-if="!storeState.groupId && hasRootProjectGroupManagePermission"
+                                          style-type="secondary"
+                                          icon-left="ic_plus_bold"
+                                          :disabled="!hasManagePermission"
+                                          @click="openProjectGroupCreateForm"
+                                >
+                                    {{ $t('PROJECT.LANDING.CREATE_GROUP') }}
+                                </p-button>
+                                <p-select-dropdown v-if="storeState.groupId && hasManagePermission && !isPermissionDenied"
+                                                   :items="settingMenu"
+                                                   style-type="icon-button"
+                                                   button-icon="ic_settings-filled"
+                                                   class="settings-button"
+                                                   @select="onSelectSettingDropdown"
+                                />
+                                <div v-if="storeState.groupId && hasManagePermission && !isPermissionDenied"
+                                     v-tooltip.top="$t('PROJECT.LANDING.MANAGE_PROJECT_GROUP_MEMBER')"
+                                     class="project-group-member-button"
+                                     :group-id="storeState.groupId"
+                                     @click="openProjectGroupMemberPage"
+                                >
+                                    <div>
+                                        <p-i name="ic_users"
+                                             width="1rem"
+                                             height="1rem"
+                                             color="inherit transparent"
+                                        />
+                                        <span class="text">{{ groupMemberCount || 0 }}</span>
+                                    </div>
+                                </div>
+                                <p-button v-if="storeState.groupId && hasManagePermission && !isPermissionDenied"
+                                          style-type="primary"
+                                          icon-left="ic_plus_bold"
+                                          @click="openProjectForm"
+                                >
+                                    <div class="truncate">
+                                        {{ $t('PROJECT.LANDING.CREATE_PROJECT') }}
+                                    </div>
+                                </p-button>
+                            </div>
+                        </div>
+                    </template>
+                </p-heading>
+                <project-card-list class="card-container"
+                                   :parent-groups="storeState.parentGroups"
+                                   :manage-disabled="!hasRootProjectGroupManagePermission"
+                                   @create-project-group="openProjectGroupCreateForm"
+                />
+
+                <project-group-form-modal v-if="storeState.projectGroupFormVisible" />
+
+                <project-group-delete-check-modal v-if="storeState.projectGroupDeleteCheckModalVisible" />
+
+                <project-group-member :visible="!!(groupMemberPageVisible && storeState.groupId)"
+                                      :group-id="storeState.groupId"
+                                      :manage-disabled="!hasManagePermission"
+                                      @close="groupMemberPageVisible = false"
+                />
+            </div>
+        </template>
+    </p-vertical-page-layout>
 </template>
 
 <script setup lang="ts">

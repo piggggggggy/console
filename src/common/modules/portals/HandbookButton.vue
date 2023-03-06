@@ -1,49 +1,48 @@
 <template>
-    <fragment>
-        <span style-type="primary"
-              class="handbook-button"
-              @click="handleHandbookButton"
-        >
-            <p-i name="ic_question-mark-circle"
-                 width="0.875rem"
-                 height="0.875rem"
-                 color="inherit"
-            />
-            <span class="text">
-                <slot name="button">{{ $t('COMMON.HANDBOOK_BUTTON.HANDBOOK') }}</slot>
-            </span>
+    <span style-type="primary"
+          class="handbook-button"
+          @click="handleHandbookButton"
+    >
+        <p-i name="ic_question-mark-circle"
+             width="0.875rem"
+             height="0.875rem"
+             color="inherit"
+        />
+        <span class="text">
+            <slot name="button">{{ t('COMMON.HANDBOOK_BUTTON.HANDBOOK') }}</slot>
         </span>
-        <portal to="handbook-title">
-            <p class="handbook-title">
-                {{ $t('COMMON.HANDBOOK_BUTTON.HANDBOOK') }}
-            </p>
-        </portal>
-        <portal to="handbook-contents">
-            <div class="handbook-contents">
-                <p-tab :tabs="tabs"
-                       :active-tab.sync="proxyActiveTab"
-                >
-                    <template v-for="(_, slot) of $scopedSlots"
-                              #[slot]="scope"
-                    >
-                        <div :key="slot">
-                            <slot :name="slot"
-                                  v-bind="scope"
-                            />
-                        </div>
-                    </template>
-                </p-tab>
-                <div class="no-more">
-                    <p-checkbox v-model="noMore"
-                                :value="true"
-                                @change="onChangeNoMore"
-                    >
-                        {{ $t('COMMON.HANDBOOK_BUTTON.DONT_DISPLAY') }}
-                    </p-checkbox>
-                </div>
-            </div>
-        </portal>
-    </fragment>
+    </span>
+    <!--        <portal to="handbook-title">-->
+    <!--            <p class="handbook-title">-->
+    <!--                {{ t('COMMON.HANDBOOK_BUTTON.HANDBOOK') }}-->
+    <!--            </p>-->
+    <!--        </portal>-->
+    <!--        <portal to="handbook-contents">-->
+    <!--            <div class="handbook-contents">-->
+    <!--                <p-tab v-model:active-tab="proxyActiveTab"-->
+    <!--                       :tabs="tabs"-->
+    <!--                >-->
+    <!--                    <template v-for="(_, slot) of $slots"-->
+    <!--                              #[slot]="scope"-->
+    <!--                              :key="slot"-->
+    <!--                    >-->
+    <!--                        <div>-->
+    <!--                            <slot :name="slot"-->
+    <!--                                  v-bind="scope"-->
+    <!--                            />-->
+    <!--                        </div>-->
+    <!--                    </template>-->
+    <!--                </p-tab>-->
+    <!--                <div class="no-more">-->
+    <!--                    <p-checkbox v-model="noMore"-->
+    <!--                                :value="true"-->
+    <!--                                @change="onChangeNoMore"-->
+    <!--                    >-->
+    <!--                        {{ t('COMMON.HANDBOOK_BUTTON.DONT_DISPLAY') }}-->
+    <!--                    </p-checkbox>-->
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--        </portal>-->
 </template>
 
 <script lang="ts">
@@ -51,6 +50,7 @@ import type { SetupContext } from 'vue';
 import {
     computed, reactive, toRefs, watch, onMounted, onUnmounted, defineComponent,
 } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import {
     PI, PCheckbox, PTab,
@@ -80,6 +80,7 @@ export default defineComponent({
         },
     },
     setup(props, { emit }: SetupContext) {
+        const { t } = useI18n();
         const state = reactive({
             proxyActiveTab: useProxyValue('activeTab', props, emit),
             storageKey: computed<string>(() => `handbook:${store.state.user.userId}:${props.type}`),
@@ -114,6 +115,7 @@ export default defineComponent({
             ...toRefs(state),
             onChangeNoMore,
             handleHandbookButton,
+            t,
         };
     },
 });

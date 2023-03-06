@@ -1,21 +1,19 @@
 <template>
-    <fragment>
-        <vertical-page-layout v-if="$route.meta.lnbVisible"
-                              :breadcrumbs="breadcrumbs"
-        >
-            <template #sidebar>
-                <cost-explorer-l-n-b />
-            </template>
-            <template #default>
-                <router-view />
-            </template>
-        </vertical-page-layout>
-        <general-page-layout v-else
-                             :breadcrumbs="breadcrumbs"
-        >
+    <vertical-page-layout v-if="$route.meta.lnbVisible"
+                          :breadcrumbs="breadcrumbs"
+    >
+        <template #sidebar>
+            <cost-explorer-l-n-b />
+        </template>
+        <template #default>
             <router-view />
-        </general-page-layout>
-    </fragment>
+        </template>
+    </vertical-page-layout>
+    <general-page-layout v-else
+                         :breadcrumbs="breadcrumbs"
+    >
+        <router-view />
+    </general-page-layout>
 </template>
 
 <script lang="ts">

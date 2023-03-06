@@ -1,6 +1,4 @@
-<template>
-    <fragment />
-</template>
+<template />
 
 <script lang="ts">
 import { defineComponent, getCurrentInstance, onMounted } from 'vue';

@@ -1,23 +1,21 @@
 <template>
-    <fragment>
-        <h3>{{ $t('BILLING.COST_MANAGEMENT.DASHBOARD.CREATE.TEMPLATE.FILTER') }}</h3>
-        <p-checkbox v-model="includesFilter"
-                    :disabled="!isDashboardTemplate"
-        >
-            {{ $t('BILLING.COST_MANAGEMENT.DASHBOARD.CREATE.TEMPLATE.APPLIED_FILTER') }}
-        </p-checkbox>
-        <p-button size="sm"
-                  style-type="tertiary"
-                  :disabled="!isDashboardTemplate"
-                  class="ml-2"
-                  @click="handleClickFilterButton"
-        >
-            {{ $t('BILLING.COST_MANAGEMENT.DASHBOARD.CREATE.TEMPLATE.VIEW_FILTER') }}
-        </p-button>
-        <view-filter-modal :visible.sync="defaultFilterModalVisible"
-                           :selected-filters="costDashboardPageState.defaultFilter"
-        />
-    </fragment>
+    <h3>{{ $t('BILLING.COST_MANAGEMENT.DASHBOARD.CREATE.TEMPLATE.FILTER') }}</h3>
+    <p-checkbox v-model="includesFilter"
+                :disabled="!isDashboardTemplate"
+    >
+        {{ $t('BILLING.COST_MANAGEMENT.DASHBOARD.CREATE.TEMPLATE.APPLIED_FILTER') }}
+    </p-checkbox>
+    <p-button size="sm"
+              style-type="tertiary"
+              :disabled="!isDashboardTemplate"
+              class="ml-2"
+              @click="handleClickFilterButton"
+    >
+        {{ $t('BILLING.COST_MANAGEMENT.DASHBOARD.CREATE.TEMPLATE.VIEW_FILTER') }}
+    </p-button>
+    <view-filter-modal v-model:visible="defaultFilterModalVisible"
+                       :selected-filters="defaultFilter"
+    />
 </template>
 
 <script lang="ts">

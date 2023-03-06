@@ -1,36 +1,34 @@
 <template>
-    <fragment>
-        <vertical-page-layout v-if="$route.meta.lnbVisible"
-                              :breadcrumbs="breadcrumbs"
+    <vertical-page-layout v-if="$route.meta.lnbVisible"
+                          :breadcrumbs="breadcrumbs"
+    >
+        <template #sidebar>
+            <my-page-l-n-b />
+        </template>
+        <template v-if="handbookState.isVisible"
+                  #handbook
         >
-            <template #sidebar>
-                <my-page-l-n-b />
-            </template>
-            <template v-if="handbookState.isVisible"
-                      #handbook
-            >
-                <div class="flex">
-                    <handbook-button :tabs="handbookState.tabs"
-                                     :active-tab.sync="handbookState.activeTab"
-                                     type="identity/user/api-key"
-                                     class="flex-shrink-0"
-                    >
-                        <template #spacectl>
-                            <keep-alive>
-                                <user-a-p-i-key-handbook />
-                            </keep-alive>
-                        </template>
-                    </handbook-button>
-                </div>
-            </template>
-            <router-view />
-        </vertical-page-layout>
-        <general-page-layout v-else
-                             :breadcrumbs="breadcrumbs"
-        >
-            <router-view />
-        </general-page-layout>
-    </fragment>
+            <div class="flex">
+                <handbook-button v-model:active-tab="handbookState.activeTab"
+                                 :tabs="handbookState.tabs"
+                                 type="identity/user/api-key"
+                                 class="flex-shrink-0"
+                >
+                    <template #spacectl>
+                        <keep-alive>
+                            <user-a-p-i-key-handbook />
+                        </keep-alive>
+                    </template>
+                </handbook-button>
+            </div>
+        </template>
+        <router-view />
+    </vertical-page-layout>
+    <general-page-layout v-else
+                         :breadcrumbs="breadcrumbs"
+    >
+        <router-view />
+    </general-page-layout>
 </template>
 
 <script lang="ts">

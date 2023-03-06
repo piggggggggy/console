@@ -1,109 +1,107 @@
 <template>
-    <fragment>
-        <sidebar-title :title="$t('PROJECT.LANDING.PROJECT_GROUPS')">
-            <template #extra>
-                <div class="action-btn-wrapper">
-                    <p-button v-if="projectPageState.treeEditMode"
-                              size="sm"
-                              style-type="highlight"
-                              @click="finishTreeEdit"
-                    >
-                        {{ $t('PROJECT.LANDING.PROJECT_GROUP_TREE.DONE') }}
-                    </p-button>
-                    <template v-else>
-                        <p-icon-button v-tooltip.bottom="$t('PROJECT.LANDING.PROJECT_GROUP_TREE.EDIT')"
-                                       name="ic_edit-text"
-                                       style-type="transparent"
-                                       size="sm"
-                                       :disabled="manageDisabled"
-                                       @click="startTreeEdit"
-                        />
-                        <p-icon-button v-tooltip.bottom="$t('PROJECT.LANDING.PROJECT_GROUP_TREE.CREATE')"
-                                       name="ic_plus_thin"
-                                       style-type="transparent"
-                                       size="sm"
-                                       color="inherit"
-                                       class="ml-1"
-                                       :disabled="!(hasRootProjectGroupManagePermission || hasCurrentProjectGroupManagePermission)"
-                                       @click="openProjectGroupCreateForm()"
-                        />
-                    </template>
-                </div>
-            </template>
-        </sidebar-title>
-
-        <p-data-loader :loading="loading">
-            <div class="mx-3">
-                <p-tree :data-fetcher="() => allProjectNode"
-                        :toggle-options="{disabled: true}"
-                        :edit-options="{disabled: true}"
-                        :drag-options="{disabled: true}"
-                        fetch-on-init
-                        @init="onAllProjectTreeInit"
-                        @change-select="onAllProjectChangeSelect"
+    <sidebar-title :title="$t('PROJECT.LANDING.PROJECT_GROUPS')">
+        <template #extra>
+            <div class="action-btn-wrapper">
+                <p-button v-if="treeEditMode"
+                          size="sm"
+                          style-type="highlight"
+                          @click="finishTreeEdit"
                 >
-                    <template #left-extra>
-                        <p-i name="ic_dots-4-square"
-                             width="1rem"
-                             height="1rem"
-                             class="all-project-button"
-                             color="inherit"
-                        />
-                    </template>
-                </p-tree>
-
-                <p-tree :edit-options="editOptions"
-                        :drag-options="dragOptions"
-                        :toggle-options="toggleOptions"
-                        :select-options="selectOptions"
-                        :data-setter="dataSetter"
-                        :data-getter="dataGetter"
-                        :data-fetcher="dataFetcher"
-                        :get-class-names="getClassNames"
-                        @init="onTreeInit"
-                        @finish-edit="onFinishEdit"
-                        @drop="onDrop"
-                        @change-select="onChangeSelect"
-                >
-                    <template #data="{node}">
-                        {{ node.data.name }}
-                    </template>
-                    <template #icon="{node}">
-                        <p-i :name="node.data.item_type === 'PROJECT' ? 'ic_document-filled' : 'ic_folder-filled'"
-                             class="project-group-icon"
-                             color="inherit"
-                             width="1rem"
-                             height="1rem"
-                        />
-                        <favorite-button v-if="node.data.item_type === 'PROJECT_GROUP'"
-                                         :item-id="node.data.id"
-                                         :favorite-type="FAVORITE_TYPE.PROJECT_GROUP"
-                                         scale="0.75"
-                                         read-only
-                                         class="mr-1"
-                        />
-                    </template>
-                    <template #right-extra="{node, path}">
-                        <p-icon-button v-if="projectPageState.treeEditMode && node.data.item_type !== 'PROJECT' && projectPageState.permissionInfo[node.data.id]"
-                                       name="ic_close"
-                                       class="group-delete-btn"
-                                       size="sm"
-                                       color="inherit"
-                                       :disabled="manageDisabled"
-                                       @click.stop="openProjectGroupDeleteCheckModal({node, path})"
-                        />
-                        <p-icon-button v-if="!projectPageState.treeEditMode && node.data.item_type !== 'PROJECT'"
-                                       name="ic_plus"
-                                       class="group-add-btn"
-                                       size="sm"
-                                       :disabled="manageDisabled || !projectPageState.permissionInfo[node.data.id]"
-                                       @click.stop="openProjectGroupCreateForm({node, path})"
-                        />
-                    </template>
-                </p-tree>
+                    {{ $t('PROJECT.LANDING.PROJECT_GROUP_TREE.DONE') }}
+                </p-button>
+                <template v-else>
+                    <p-icon-button v-tooltip.bottom="$t('PROJECT.LANDING.PROJECT_GROUP_TREE.EDIT')"
+                                   name="ic_edit-text"
+                                   style-type="transparent"
+                                   size="sm"
+                                   :disabled="manageDisabled"
+                                   @click="startTreeEdit"
+                    />
+                    <p-icon-button v-tooltip.bottom="$t('PROJECT.LANDING.PROJECT_GROUP_TREE.CREATE')"
+                                   name="ic_plus_thin"
+                                   style-type="transparent"
+                                   size="sm"
+                                   color="inherit"
+                                   class="ml-1"
+                                   :disabled="!(hasRootProjectGroupManagePermission || hasCurrentProjectGroupManagePermission)"
+                                   @click="openProjectGroupCreateForm()"
+                    />
+                </template>
             </div>
-        </p-data-loader>
-    </fragment>
+        </template>
+    </sidebar-title>
+
+    <p-data-loader :loading="loading">
+        <div class="mx-3">
+            <p-tree :data-fetcher="() => allProjectNode"
+                    :toggle-options="{disabled: true}"
+                    :edit-options="{disabled: true}"
+                    :drag-options="{disabled: true}"
+                    fetch-on-init
+                    @init="onAllProjectTreeInit"
+                    @change-select="onAllProjectChangeSelect"
+            >
+                <template #left-extra>
+                    <p-i name="ic_dots-4-square"
+                         width="1rem"
+                         height="1rem"
+                         class="all-project-button"
+                         color="inherit"
+                    />
+                </template>
+            </p-tree>
+
+            <p-tree :edit-options="editOptions"
+                    :drag-options="dragOptions"
+                    :toggle-options="toggleOptions"
+                    :select-options="selectOptions"
+                    :data-setter="dataSetter"
+                    :data-getter="dataGetter"
+                    :data-fetcher="dataFetcher"
+                    :get-class-names="getClassNames"
+                    @init="onTreeInit"
+                    @finish-edit="onFinishEdit"
+                    @drop="onDrop"
+                    @change-select="onChangeSelect"
+            >
+                <template #data="{node}">
+                    {{ node.data.name }}
+                </template>
+                <template #icon="{node}">
+                    <p-i :name="node.data.item_type === 'PROJECT' ? 'ic_document-filled' : 'ic_folder-filled'"
+                         class="project-group-icon"
+                         color="inherit"
+                         width="1rem"
+                         height="1rem"
+                    />
+                    <favorite-button v-if="node.data.item_type === 'PROJECT_GROUP'"
+                                     :item-id="node.data.id"
+                                     :favorite-type="FAVORITE_TYPE.PROJECT_GROUP"
+                                     scale="0.75"
+                                     read-only
+                                     class="mr-1"
+                    />
+                </template>
+                <template #right-extra="{node, path}">
+                    <p-icon-button v-if="treeEditMode && node.data.item_type !== 'PROJECT' && permissionInfo[node.data.id]"
+                                   name="ic_close"
+                                   class="group-delete-btn"
+                                   size="sm"
+                                   color="inherit"
+                                   :disabled="manageDisabled"
+                                   @click.stop="openProjectGroupDeleteCheckModal({node, path})"
+                    />
+                    <p-icon-button v-if="!treeEditMode && node.data.item_type !== 'PROJECT'"
+                                   name="ic_plus"
+                                   class="group-add-btn"
+                                   size="sm"
+                                   :disabled="manageDisabled || !permissionInfo[node.data.id]"
+                                   @click.stop="openProjectGroupCreateForm({node, path})"
+                    />
+                </template>
+            </p-tree>
+        </div>
+    </p-data-loader>
 </template>
 
 <script lang="ts">

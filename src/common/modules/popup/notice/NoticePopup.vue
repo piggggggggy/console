@@ -1,13 +1,11 @@
 <template>
-    <fragment>
-        <notice-popup-item
-            v-for="(item, index) in popupList"
-            v-show="!isSessionExpired"
-            :key="`notice-item-${index}`"
-            :popup-index="index"
-            :item="item"
-        />
-    </fragment>
+    <notice-popup-item
+        v-for="(item, index) in popupList"
+        v-show="!isSessionExpired"
+        :key="`notice-item-${index}`"
+        :popup-index="index"
+        :item="item"
+    />
 </template>
 
 <script lang="ts">

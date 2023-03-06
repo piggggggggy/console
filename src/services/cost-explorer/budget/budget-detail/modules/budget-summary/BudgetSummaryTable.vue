@@ -1,44 +1,42 @@
 <template>
-    <fragment>
-        <p class="toggle">
-            {{ $t('BILLING.COST_MANAGEMENT.BUDGET.DETAIL.ORIGINAL_DATA') }}
-            <p-collapsible-toggle :toggle-type="'switch'"
-                                  :is-collapsed.sync="showFormattedBudgetData"
-                                  class="collapsible-toggle"
-            />
-        </p>
-        <p-data-table :fields="fields"
-                      :items="data"
-                      :skeleton-rows="3"
-                      :stripe="false"
-                      :selectable="false"
-                      :disable-copy="true"
-                      :disable-hover="true"
-                      class="budget-summary-table"
-        >
-            <template #col-format="{field, value}">
-                <span v-if="field.name && value.path === 'limit'">
+    <p class="toggle">
+        {{ $t('BILLING.COST_MANAGEMENT.BUDGET.DETAIL.ORIGINAL_DATA') }}
+        <p-collapsible-toggle v-model:is-collapsed="showFormattedBudgetData"
+                              :toggle-type="'switch'"
+                              class="collapsible-toggle"
+        />
+    </p>
+    <p-data-table :fields="fields"
+                  :items="data"
+                  :skeleton-rows="3"
+                  :stripe="false"
+                  :selectable="false"
+                  :disable-copy="true"
+                  :disable-hover="true"
+                  class="budget-summary-table"
+    >
+        <template #col-format="{field, value}">
+            <span v-if="field.name && value.path === 'limit'">
+                {{
+                    showFormattedBudgetData ? currencyMoneyFormatter(value[value.path], currency, currencyRates)
+                    : currencyMoneyFormatter(value[value.path], currency, currencyRates, false, 1000000000)
+                }}
+            </span>
+            <span v-else-if="field.name && value.path === 'usd_cost'"
+                  class="text-blue-700"
+            >
+                <router-link :to="value.link"
+                             class="link-text"
+                >
                     {{
                         showFormattedBudgetData ? currencyMoneyFormatter(value[value.path], currency, currencyRates)
                         : currencyMoneyFormatter(value[value.path], currency, currencyRates, false, 1000000000)
                     }}
-                </span>
-                <span v-else-if="field.name && value.path === 'usd_cost'"
-                      class="text-blue-700"
-                >
-                    <router-link :to="value.link"
-                                 class="link-text"
-                    >
-                        {{
-                            showFormattedBudgetData ? currencyMoneyFormatter(value[value.path], currency, currencyRates)
-                            : currencyMoneyFormatter(value[value.path], currency, currencyRates, false, 1000000000)
-                        }}
-                    </router-link>
-                </span>
-                <span v-else>{{ value[value.path] }}</span>
-            </template>
-        </p-data-table>
-    </fragment>
+                </router-link>
+            </span>
+            <span v-else>{{ value[value.path] }}</span>
+        </template>
+    </p-data-table>
 </template>
 
 <script lang="ts">

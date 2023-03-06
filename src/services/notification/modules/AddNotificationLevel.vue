@@ -1,17 +1,15 @@
 <template>
-    <fragment>
-        <p-field-group :label="$t('IDENTITY.USER.NOTIFICATION.FORM.NOTIFICATION_LEVEL')"
-                       required
-                       class="level-dropdown"
-        >
-            <template #default>
-                <p-select-dropdown v-model="proxyNotificationLevel"
-                                   :items="LEVEL_LIST"
-                                   @select="onChangeLevel"
-                />
-            </template>
-        </p-field-group>
-    </fragment>
+    <p-field-group :label="$t('IDENTITY.USER.NOTIFICATION.FORM.NOTIFICATION_LEVEL')"
+                   required
+                   class="level-dropdown"
+    >
+        <template #default>
+            <p-select-dropdown v-model="proxyNotificationLevel"
+                               :items="LEVEL_LIST"
+                               @select="onChangeLevel"
+            />
+        </template>
+    </p-field-group>
 </template>
 
 <script lang="ts">

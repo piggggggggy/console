@@ -1,69 +1,67 @@
 <template>
-    <fragment>
-        <p v-if="!isEditMode"
-           class="content-wrapper"
+    <p v-if="!isEditMode"
+       class="content-wrapper"
+    >
+        <span class="project">
+            <p-copy-button :value="alertData.project_id">
+                <p-anchor :to="referenceRouter(
+                              alertData.project_id,
+                              { resource_type: 'identity.Project' })"
+                          highlight
+                >
+                    {{ projects[alertData.project_id] ? projects[alertData.project_id].label : alertData.project_id }}
+                </p-anchor>
+            </p-copy-button>
+        </span>
+        <p-button style-type="tertiary"
+                  size="sm"
+                  class="add-button ml-2"
+                  :disabled="manageDisabled"
+                  @click="startEdit(alertData.project_id)"
         >
-            <span class="project">
-                <p-copy-button :value="alertData.project_id">
-                    <p-anchor :to="referenceRouter(
-                                  alertData.project_id,
-                                  { resource_type: 'identity.Project' })"
-                              highlight
-                    >
-                        {{ projects[alertData.project_id] ? projects[alertData.project_id].label : alertData.project_id }}
-                    </p-anchor>
-                </p-copy-button>
-            </span>
-            <p-button style-type="tertiary"
+            {{ $t('MONITORING.ALERT.DETAIL.INFO.CHANGE') }}
+        </p-button>
+    </p>
+    <div v-else
+         class="content-wrapper"
+    >
+        <project-select-dropdown :selected-project-ids="dataForUpdate ? [dataForUpdate] : []"
+                                 project-selectable
+                                 class="dropdown"
+                                 @select="onSelectProject"
+        />
+        <div class="button-group ml-2">
+            <p-button style-type="secondary"
                       size="sm"
-                      class="add-button ml-2"
-                      :disabled="manageDisabled"
-                      @click="startEdit(alertData.project_id)"
+                      class="cancel-button"
+                      @click="cancelEdit(alertData.project_id)"
             >
-                {{ $t('MONITORING.ALERT.DETAIL.INFO.CHANGE') }}
+                {{ $t('COMMON.TAGS.CANCEL') }}
             </p-button>
-        </p>
-        <div v-else
-             class="content-wrapper"
-        >
-            <project-select-dropdown :selected-project-ids="dataForUpdate ? [dataForUpdate] : []"
-                                     project-selectable
-                                     class="dropdown"
-                                     @select="onSelectProject"
-            />
-            <div class="button-group ml-2">
-                <p-button style-type="secondary"
-                          size="sm"
-                          class="cancel-button"
-                          @click="cancelEdit(alertData.project_id)"
-                >
-                    {{ $t('COMMON.TAGS.CANCEL') }}
-                </p-button>
-                <p-button style-type="primary"
-                          size="sm"
-                          @click="openModal"
-                >
-                    {{ $t('MONITORING.ALERT.DETAIL.INFO.SAVE_CHANGES') }}
-                </p-button>
-            </div>
+            <p-button style-type="primary"
+                      size="sm"
+                      @click="openModal"
+            >
+                {{ $t('MONITORING.ALERT.DETAIL.INFO.SAVE_CHANGES') }}
+            </p-button>
         </div>
-        <p-button-modal
-            :header-title="$t('MONITORING.ALERT.DETAIL.INFO.CHANGE_PROJECT_MODAL_TITLE')"
-            centered
-            size="sm"
-            fade
-            backdrop
-            theme-color="alert"
-            :visible.sync="modalVisible"
-            @confirm="onClickSave(EDIT_MODE.PROJECT)"
-        >
-            <template #body>
-                <p class="modal-body">
-                    {{ $t('MONITORING.ALERT.DETAIL.INFO.CHANGE_PROJECT_MODAL_DESC') }}
-                </p>
-            </template>
-        </p-button-modal>
-    </fragment>
+    </div>
+    <p-button-modal
+        v-model:visible="modalVisible"
+        :header-title="$t('MONITORING.ALERT.DETAIL.INFO.CHANGE_PROJECT_MODAL_TITLE')"
+        centered
+        size="sm"
+        fade
+        backdrop
+        theme-color="alert"
+        @confirm="onClickSave(EDIT_MODE.PROJECT)"
+    >
+        <template #body>
+            <p class="modal-body">
+                {{ $t('MONITORING.ALERT.DETAIL.INFO.CHANGE_PROJECT_MODAL_DESC') }}
+            </p>
+        </template>
+    </p-button-modal>
 </template>
 
 <script lang="ts">

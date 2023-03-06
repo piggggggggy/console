@@ -1,16 +1,14 @@
 <template>
-    <fragment>
-        <h3>{{ $t('BILLING.COST_MANAGEMENT.DASHBOARD.CREATE.VISIBILITY.SAVE_AS') }}</h3>
-        <p-radio v-for="privacy in filteredPrivacyList"
-                 :key="privacy.name"
-                 v-model="selectedPrivacy"
-                 :value="privacy.name"
-                 class="mr-4"
-                 @change="handleRadio"
-        >
-            <span class="capitalize ml-1">{{ privacy.label.toLowerCase() }}</span>
-        </p-radio>
-    </fragment>
+    <h3>{{ $t('BILLING.COST_MANAGEMENT.DASHBOARD.CREATE.VISIBILITY.SAVE_AS') }}</h3>
+    <p-radio v-for="privacy in filteredPrivacyList"
+             :key="privacy.name"
+             v-model="selectedPrivacy"
+             :value="privacy.name"
+             class="mr-4"
+             @change="handleRadio"
+    >
+        <span class="capitalize ml-1">{{ privacy.label.toLowerCase() }}</span>
+    </p-radio>
 </template>
 
 <script lang="ts">

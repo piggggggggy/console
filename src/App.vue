@@ -21,35 +21,35 @@
                                @close="$store.dispatch('display/hideSidebar')"
                     >
                         <main class="main">
-                            <portal-target name="top-notification"
-                                           :slot-props="{hasDefaultMessage: true}"
-                            />
+                            <!--                            <portal-target name="top-notification"-->
+                            <!--                                           :slot-props="{hasDefaultMessage: true}"-->
+                            <!--                            />-->
                             <router-view />
                         </main>
                         <template #title>
-                            <portal-target v-if="$store.state.display.sidebarType === SIDEBAR_TYPE.info"
-                                           name="info-title"
-                            />
-                            <portal-target v-else-if="$store.state.display.sidebarType === SIDEBAR_TYPE.widget"
-                                           name="widget-title"
-                            />
-                            <portal-target v-else
-                                           name="handbook-title"
-                            />
+                            <!--                            <portal-target v-if="$store.state.display.sidebarType === SIDEBAR_TYPE.info"-->
+                            <!--                                           name="info-title"-->
+                            <!--                            />-->
+                            <!--                            <portal-target v-else-if="$store.state.display.sidebarType === SIDEBAR_TYPE.widget"-->
+                            <!--                                           name="widget-title"-->
+                            <!--                            />-->
+                            <!--                            <portal-target v-else-->
+                            <!--                                           name="handbook-title"-->
+                            <!--                            />-->
                         </template>
                         <template #sidebar>
-                            <portal-target v-if="$store.state.display.sidebarType === SIDEBAR_TYPE.info"
-                                           name="info-contents"
-                            />
-                            <portal-target v-else-if="$store.state.display.sidebarType === SIDEBAR_TYPE.widget"
-                                           name="widget-contents"
-                            />
-                            <portal-target v-else
-                                           name="handbook-contents"
-                            />
+                            <!--                            <portal-target v-if="$store.state.display.sidebarType === SIDEBAR_TYPE.info"-->
+                            <!--                                           name="info-contents"-->
+                            <!--                            />-->
+                            <!--                            <portal-target v-else-if="$store.state.display.sidebarType === SIDEBAR_TYPE.widget"-->
+                            <!--                                           name="widget-contents"-->
+                            <!--                            />-->
+                            <!--                            <portal-target v-else-->
+                            <!--                                           name="handbook-contents"-->
+                            <!--                            />-->
                         </template>
                         <template #footer>
-                            <portal-target name="widget-footer" />
+                            <!--                            <portal-target name="widget-footer" />-->
                         </template>
                     </p-sidebar>
                 </div>
@@ -57,8 +57,8 @@
             <router-view v-else />
             <p-icon-modal :visible="isExpired"
                           emoji="👋"
-                          :header-title="$t('COMMON.SESSION_MODAL.SESSION_EXPIRED')"
-                          :button-text="$t('COMMON.SESSION_MODAL.SIGNIN')"
+                          :header-title="t('COMMON.SESSION_MODAL.SESSION_EXPIRED')"
+                          :button-text="t('COMMON.SESSION_MODAL.SIGNIN')"
                           button-type="primary"
                           @clickButton="goToSignIn"
             />
@@ -82,8 +82,9 @@ import {
     computed,
     defineComponent, getCurrentInstance, reactive, toRefs,
 } from 'vue';
-import type { Location } from 'vue-router';
 import type { Vue } from 'vue/types/vue';
+import { useI18n } from 'vue-i18n';
+import type { Location } from 'vue-router';
 
 import {
     PNoticeAlert, PToastAlert, PIconModal, PSidebar,
@@ -121,6 +122,7 @@ export default defineComponent({
         PSidebar,
     },
     setup() {
+        const { t } = useI18n();
         const vm = getCurrentInstance()?.proxy as Vue;
 
         const state = reactive({
@@ -143,6 +145,7 @@ export default defineComponent({
             goToSignIn,
             SIDEBAR_TYPE,
             showsBrowserRecommendation,
+            t,
         };
     },
 });

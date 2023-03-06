@@ -1,52 +1,52 @@
 <template>
     <div>
-        <portal to="widget-title">
-            <span class="sidebar-title">{{ $t('BILLING.COST_MANAGEMENT.DASHBOARD.CUSTOMIZE.CUSTOMIZE_TITLE') }}</span> <br>
-        </portal>
-        <portal to="widget-contents">
-            <div class="sidebar-contents">
-                <p class="sidebar-desc">
-                    {{ $t('BILLING.COST_MANAGEMENT.DASHBOARD.CUSTOMIZE.SIDEBAR_DESC') }}
-                </p>
-                <p-button style-type="secondary"
-                          icon-left="ic_plus_bold"
-                          size="lg"
-                          :block="true"
-                          class="add-widget-button"
-                          @click="handleClickAddWidget"
-                >
-                    {{ $t('BILLING.COST_MANAGEMENT.DASHBOARD.CUSTOMIZE.ADD_WIDGET') }}
-                </p-button>
-                <p class="widget-count">
-                    {{ $t('BILLING.COST_MANAGEMENT.DASHBOARD.CUSTOMIZE.CURRENT_WIDGETS') }}
-                </p>
-                <draggable v-model="editingCustomLayout"
-                           tag="ul"
-                           class="widget-list"
-                           ghost-class="ghost"
-                >
-                    <li
-                        v-for="(widget, idx) in editingCustomLayout"
-                        :key="idx"
-                        class="widget-item"
-                    >
-                        <p-i name="ic_drag-handle-alt"
-                             width="1rem"
-                             height="1rem"
-                             class="drag-icon"
-                        />
-                        <div class="widget-row">
-                            <span v-for="{ name, widget_id } in widget"
-                                  :key="`${widget_id}-${getUUID()}`"
-                                  class="widget-col"
-                            >
-                                {{ name }}
-                            </span>
-                        </div>
-                    </li>
-                </draggable>
-            </div>
-        </portal>
+        <!--        <portal to="widget-title">-->
+        <!--            <span class="sidebar-title">{{ $t('BILLING.COST_MANAGEMENT.DASHBOARD.CUSTOMIZE.CUSTOMIZE_TITLE') }}</span> <br>-->
+        <!--        </portal>-->
+        <!--        <portal to="widget-contents">-->
+        <!--            <div class="sidebar-contents">-->
+        <!--                <p class="sidebar-desc">-->
+        <!--                    {{ $t('BILLING.COST_MANAGEMENT.DASHBOARD.CUSTOMIZE.SIDEBAR_DESC') }}-->
+        <!--                </p>-->
+        <!--                <p-button style-type="secondary"-->
+        <!--                          icon-left="ic_plus_bold"-->
+        <!--                          size="lg"-->
+        <!--                          :block="true"-->
+        <!--                          class="add-widget-button"-->
+        <!--                          @click="handleClickAddWidget"-->
+        <!--                >-->
+        <!--                    {{ $t('BILLING.COST_MANAGEMENT.DASHBOARD.CUSTOMIZE.ADD_WIDGET') }}-->
+        <!--                </p-button>-->
+        <!--                <p class="widget-count">-->
+        <!--                    {{ $t('BILLING.COST_MANAGEMENT.DASHBOARD.CUSTOMIZE.CURRENT_WIDGETS') }}-->
+        <!--                </p>-->
+        <!--                <draggable v-model="editingCustomLayout"-->
+        <!--                           tag="ul"-->
+        <!--                           class="widget-list"-->
+        <!--                           ghost-class="ghost"-->
+        <!--                >-->
+        <!--                    <li-->
+        <!--                        v-for="(widget, idx) in editingCustomLayout"-->
+        <!--                        :key="idx"-->
+        <!--                        class="widget-item"-->
+        <!--                    >-->
+        <!--                        <p-i name="ic_drag-handle-alt"-->
+        <!--                             width="1rem"-->
+        <!--                             height="1rem"-->
+        <!--                             class="drag-icon"-->
+        <!--                        />-->
+        <!--                        <div class="widget-row">-->
+        <!--                            <span v-for="{ name, widget_id } in widget"-->
+        <!--                                  :key="`${widget_id}-${getUUID()}`"-->
+        <!--                                  class="widget-col"-->
+        <!--                            >-->
+        <!--                                {{ name }}-->
+        <!--                            </span>-->
+        <!--                        </div>-->
+        <!--                    </li>-->
+        <!--                </draggable>-->
+        <!--            </div>-->
+        <!--        </portal>-->
         <cost-dashboard-customize-widget-modal v-model="customizeModalVisible"
                                                @confirm="$emit('add-widget',$event)"
         />

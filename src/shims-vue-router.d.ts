@@ -9,13 +9,13 @@ declare module 'vue-router' {
       RouteRecordMultipleViews as OriginRouteRecordMultipleViews,
       RouteRecordSingleView as OriginRouteRecordSingleView,
       // Route as OriginRoute,
-      RouteRecord as OriginRouteRecord,
+      // RouteRecord as OriginRouteRecord,
       RouteMeta as OriginRouteMeta,
       Router as OriginRouter,
       RouteLocationNormalized as OriginRouteLocationNormalized,
       // RouteRecordName as OriginRouteRecordName,
       // VueRouter,
-  } from 'vue-router/dist/vue-router';
+  } from 'vue-router';
 
     import type { AccessLevel } from '@/lib/access-control/config';
 
@@ -30,7 +30,7 @@ declare module 'vue-router' {
   interface RouteBreadcrumbsFormatter {
       (route: RouteLocationNormalized): Breadcrumb[];
   }
-  interface RouteMeta extends OriginRouteMeta {
+  export interface RouteMeta extends OriginRouteMeta {
     lnbVisible?: boolean;
     menuId?: string;
     label?: string|RouteLabelFormatter;

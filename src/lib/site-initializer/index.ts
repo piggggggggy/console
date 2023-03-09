@@ -58,7 +58,7 @@ const init = async (app: App) => {
         initDayjs();
         initQueryHelper();
         initGtag(store, config, app);
-        initGtm(config);
+        initGtm(config, app);
         // initAmcharts(config);
         // initAmcharts5(config);
         // initRouter(domainName);

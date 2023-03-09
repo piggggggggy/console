@@ -1,28 +1,7 @@
-import Vue from 'vue';
-
-import VueGtm from '@gtm-support/vue-gtm';
-
-import config from '@/lib/config';
-
 export class Gtm {
     private static _gtm: null|Gtm = null;
 
-    constructor() {
-        const gtmId: string = config.get('GTM_ID');
-        if (!gtmId || gtmId === 'DISABLED') {
-            console.log('GTM ID is not given.');
-            Gtm._gtm = null;
-            return;
-        }
-        Vue.use(VueGtm, {
-            id: gtmId,
-            defer: false,
-            compatibility: false,
-            nonce: '',
-            enabled: true,
-            trackOnNextTick: false,
-        });
-    }
+    constructor() {}
 
     static init() {
         try {

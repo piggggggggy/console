@@ -10,22 +10,12 @@ import config from '@/lib/config';
 export class GTag {
     private static _gtag: VueGtagType|null;
 
-    constructor() {
-        const gtagId: string = config.get('GTAG_ID');
-        if (!gtagId || gtagId === 'DISABLED') {
-            console.log('GTG ID is not given.');
-            GTag._gtag = null;
-            return;
-        }
-
-        Vue.use(VueGtag, {
-            config: { id: gtagId },
-        });
-        GTag._gtag = Vue.prototype.$gtag;
+    constructor(value) {
+        GTag._gtag = value;
     }
 
-    static init() {
-        new GTag();
+    static init(globalProperties) {
+        new GTag(globalProperties);
     }
 
     static get gtag(): VueGtagType|null {

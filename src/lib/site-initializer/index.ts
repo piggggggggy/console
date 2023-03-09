@@ -1,4 +1,5 @@
 import { computed } from 'vue';
+import type { App } from 'vue';
 
 import { QueryHelper } from '@cloudforet/core-lib/query';
 
@@ -37,6 +38,7 @@ const initRouter = (domainName?: string) => {
 };
 
 const initI18n = () => {
+    console.debug('init i18n');
     setI18nLocale(store.state.user.language);
 };
 
@@ -45,7 +47,7 @@ const removeInitializer = () => {
     if (el?.parentElement) el.parentElement.removeChild(el);
 };
 
-const init = async () => {
+const init = async (app: App) => {
     /* Init SpaceONE Console */
     await initConfig();
     await initApiClient(store, config);
@@ -55,22 +57,22 @@ const init = async () => {
         initI18n();
         initDayjs();
         initQueryHelper();
-        initGtag(store, config);
+        initGtag(store, config, app);
         initGtm(config);
-        initAmcharts(config);
-        initAmcharts5(config);
-        initRouter(domainName);
-        initErrorHandler(store);
-        initRequestIdleCallback();
-        await checkSsoAccessToken(store);
+        // initAmcharts(config);
+        // initAmcharts5(config);
+        // initRouter(domainName);
+        // initErrorHandler(store);
+        // initRequestIdleCallback();
+        // await checkSsoAccessToken(store);
     } else {
-        initRouter();
-        throw new Error('Site initialization failed: No matched domain');
+        // initRouter();
+        // throw new Error('Site initialization failed: No matched domain');
     }
 };
 
 const MIN_LOADING_TIME = 1000;
-export const siteInit = async () => {
+export const siteInit = async (app: App) => {
     store.dispatch('display/startInitializing');
 
     store.watch((state) => state.display.isInitialized, (isInitialized) => {
@@ -92,14 +94,14 @@ export const siteInit = async () => {
     }, MIN_LOADING_TIME);
 
     try {
-        await init();
+        await init(app);
     } catch (e) {
         console.error(e);
-        store.dispatch('display/finishInitializing');
-
-        if (SpaceRouter.router) {
-            await SpaceRouter.router.push({ name: ERROR_ROUTE._NAME });
-        }
+        // store.dispatch('display/finishInitializing');
+        //
+        // if (SpaceRouter.router) {
+        //     await SpaceRouter.router.push({ name: ERROR_ROUTE._NAME });
+        // }
     } finally {
         isFinishedInitializing = true;
         if (isMinTimePassed) {

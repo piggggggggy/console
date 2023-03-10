@@ -1,4 +1,4 @@
-import type { Vue } from 'vue';
+import type { Component, Vue } from 'vue';
 import type { RouteRecordNormalized } from 'vue-router';
 
 import type { AccessInfo } from '@/lib/access-control/config';

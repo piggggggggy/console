@@ -29,16 +29,16 @@ const initQueryHelper = () => {
     QueryHelper.init(computed(() => store.state.user.timezone));
 };
 
-const initRouter = (domainName?: string) => {
+const initRouter = (app: App, domainName?: string) => {
     if (!domainName) {
         SpaceRouter.init(errorRoutes);
     } else {
         SpaceRouter.init(serviceRoutes);
     }
+    app.use(SpaceRouter.router);
 };
 
 const initI18n = () => {
-    console.debug('init i18n');
     setI18nLocale(store.state.user.language);
 };
 
@@ -59,9 +59,9 @@ const init = async (app: App) => {
         initQueryHelper();
         initGtag(store, config, app);
         initGtm(config, app);
-        // initAmcharts(config);
-        // initAmcharts5(config);
-        // initRouter(domainName);
+        initAmcharts(config);
+        initAmcharts5(config);
+        initRouter(app, domainName);
         // initErrorHandler(store);
         // initRequestIdleCallback();
         // await checkSsoAccessToken(store);

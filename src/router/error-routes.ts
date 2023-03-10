@@ -2,7 +2,7 @@ import type { RouteRecordRaw } from 'vue-router';
 
 import { ACCESS_LEVEL } from '@/lib/access-control/config';
 
-import ErrorPage from '@/common/pages/ErrorPage.vue';
+const ErrorPage = () => import('@/common/pages/ErrorPage.vue');
 
 export const ERROR_ROUTE = Object.freeze({
     _NAME: 'error',
@@ -17,7 +17,8 @@ export const errorRoutes: RouteRecordRaw[] = [
         component: ErrorPage,
     },
     {
-        path: '*',
+        // TODO: Research and refactoring
+        path: '/:pathMatch(.*)*',
         component: ErrorPage,
     },
 ];

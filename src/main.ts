@@ -33,12 +33,12 @@ app.use(FloatingVue, { boundary: document.body });
 app.use(PortalVue);
 app.use(store);
 app.use(PiniaVuePlugin);
-app.use(i18n);
 app.use(pinia);
+app.use(i18n);
 
 directive(app);
-app.use(LottieVuePlayer);
-app.use(SpaceDesignSystem, { vueI18n: i18n });
+// app.use(LottieVuePlayer);
+// app.use(SpaceDesignSystem, { vueI18n: i18n });
 
 /** ********** INITIALIZE ************** */
 (async () => {

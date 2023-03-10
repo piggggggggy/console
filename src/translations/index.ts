@@ -3,6 +3,7 @@
 // import type VueI18n from 'vue-i18n';
 import { createI18n } from 'vue-i18n';
 
+import type { LocaleMessage } from '@intlify/core-base';
 import { messages } from '@spaceone/design-system';
 
 import en from '@cloudforet/language-pack/en.json';
@@ -20,14 +21,13 @@ const componentJA = messages.jp;
 const componentKO = messages.ko;
 
 // simple recursive remove keys with empty value
-// TODO: return type { [p: string]: any } must be replaced by type LocaleMessageObject
-const removeEmpty = (obj: any): { [p: string]: any } => Object.keys(obj)
+const removeEmpty = (obj: any): LocaleMessage => Object.keys(obj)
     .filter((k: string) => obj[k] !== null && obj[k] !== undefined && obj[k] !== '') // Remove undef. and null and empty.string.
     .reduce(
         (newObj, k) => (typeof obj[k] === 'object'
             ? Object.assign(newObj, { [k]: removeEmpty(obj[k]) }) // Recurse.
             : Object.assign(newObj, { [k]: obj[k] })), // Copy value.
-        {},
+        {} as LocaleMessage,
     );
 
 const supportLanguages = ['en', 'ko', 'jp'] as const;
@@ -44,6 +44,7 @@ const loadLocaleFiles = async (lang: string) => {
 export const i18n = createI18n({
     legacy: false,
     locale: 'en', // set locale
+    // allowComposition: true,
     fallbackLocale: 'en',
     messages: {
         en: removeEmpty({ ...en, ...componentEN }),
@@ -52,6 +53,8 @@ export const i18n = createI18n({
     },
     silentTranslationWarn: true,
     silentFallbackWarn: true,
+    // TODO: implementation
+    globalInjection: true,
 });
 
 export const setI18nLocale = async (_lang: string) => {
@@ -88,3 +91,5 @@ export const setI18nLocale = async (_lang: string) => {
 //         };
 //     }
 // }
+
+

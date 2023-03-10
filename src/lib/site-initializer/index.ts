@@ -62,12 +62,12 @@ const init = async (app: App) => {
         initAmcharts(config);
         initAmcharts5(config);
         initRouter(app, domainName);
-        // initErrorHandler(store);
-        // initRequestIdleCallback();
-        // await checkSsoAccessToken(store);
+        initErrorHandler(store, app);
+        initRequestIdleCallback();
+        await checkSsoAccessToken(store);
     } else {
-        // initRouter();
-        // throw new Error('Site initialization failed: No matched domain');
+        initRouter(app);
+        throw new Error('Site initialization failed: No matched domain');
     }
 };
 
@@ -97,11 +97,11 @@ export const siteInit = async (app: App) => {
         await init(app);
     } catch (e) {
         console.error(e);
-        // store.dispatch('display/finishInitializing');
-        //
-        // if (SpaceRouter.router) {
-        //     await SpaceRouter.router.push({ name: ERROR_ROUTE._NAME });
-        // }
+        store.dispatch('display/finishInitializing');
+
+        if (SpaceRouter.router) {
+            await SpaceRouter.router.push({ name: ERROR_ROUTE._NAME });
+        }
     } finally {
         isFinishedInitializing = true;
         if (isMinTimePassed) {

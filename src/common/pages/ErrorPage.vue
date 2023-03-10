@@ -5,7 +5,7 @@
                  src="/images/error-octos.gif"
             >
             <h2 class="error-code">
-                {{ statusCode }}
+                {{ props.statusCode }}
             </h2>
             <h3 class="error-message">
                 <template v-if="statusCode === '403'">
@@ -26,19 +26,13 @@
     </section>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { PButton } from '@spaceone/design-system';
 
-export default {
-    name: 'ErrorPage',
-    components: { PButton },
-    props: {
-        statusCode: {
-            type: String,
-            default: '404',
-        },
-    },
-};
+const props = withDefaults(defineProps<{ statusCode: string }>(), {
+    statusCode: '404',
+});
+
 </script>
 
 <style lang="postcss" scoped>

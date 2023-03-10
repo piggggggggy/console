@@ -46,9 +46,9 @@
                 class="menu-item"
                 :class="[{'second-depth': depth === 2}, {'selected': isSelectedMenu(item.to)}]"
                 :to="item.to"
-                @click.native="$event.stopImmediatePropagation()"
-                @mouseenter.native="hoveredItem = item.id"
-                @mouseleave.native="hoveredItem = ''"
+                @click="$event.stopImmediatePropagation()"
+                @mouseenter="hoveredItem = item.id"
+                @mouseleave="hoveredItem = ''"
             >
                 <slot name="before-text"
                       v-bind="{...$props, item, index: idx}"

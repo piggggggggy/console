@@ -18,8 +18,8 @@
             />
         </span>
         <p-tab v-show="visible"
+               v-model:active-tab="activeTab"
                :tabs="tabs"
-               :active-tab.sync="activeTab"
         >
             <template #recent>
                 <g-n-b-recent :visible="visible && activeTab === 'recent'"

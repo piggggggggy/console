@@ -5,7 +5,7 @@
     >
         <g-n-b-search-input v-if="isOverLaptopSize"
                             v-model="inputText"
-                            :is-focused.sync="isFocusOnInput"
+                            v-model:is-focused="isFocusOnInput"
                             @click="showSearchMenu"
                             @esc="hideSearchMenu"
                             @arrow-up="moveFocusToSuggestion('UPWARD')"
@@ -28,11 +28,11 @@
             />
         </span>
         <g-n-b-search-dropdown v-show="visible"
+                               v-model:focusing-direction="focusingDirection"
+                               v-model:is-focused="isFocusOnSuggestion"
                                :input-text="trimmedInputText"
                                :loading="loading"
                                :items="dataState.dropdownItems"
-                               :focusing-direction.sync="focusingDirection"
-                               :is-focused.sync="isFocusOnSuggestion"
                                :is-recent="showRecent"
                                :search-limit="SEARCH_LIMIT"
                                @move-focus-end="handleMoveFocusEnd"
@@ -42,7 +42,7 @@
             <template #search-input>
                 <g-n-b-search-input v-if="!isOverLaptopSize"
                                     v-model="inputText"
-                                    :is-focused.sync="isFocusOnInput"
+                                    v-model:is-focused="isFocusOnInput"
                                     @click="showSearchMenu"
                                     @esc="hideSearchMenu"
                                     @arrow-up="moveFocusToSuggestion('UPWARD')"

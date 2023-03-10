@@ -17,8 +17,8 @@
             />
         </span>
         <p-tab v-show="visible"
+               v-model:active-tab="activeTab"
                :tabs="tabs"
-               :active-tab.sync="activeTab"
         >
             <template #extra="tab">
                 <p-badge v-if="count[tab.name] !== 0"
@@ -29,8 +29,8 @@
                 </p-badge>
             </template>
             <template #notifications>
-                <g-n-b-notifications-tab :visible="visible && activeTab === 'notifications'"
-                                         :count.sync="notificationCount"
+                <g-n-b-notifications-tab v-model:count="notificationCount"
+                                         :visible="visible && activeTab === 'notifications'"
                 />
             </template>
             <template #notice>

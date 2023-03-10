@@ -1,9 +1,9 @@
 <template>
     <div class="alert-data-table">
         <p-toolbox-table
+            v-model:select-index="selectIndex"
             searchable
             selectable
-            v-model:select-index="selectIndex"
             sortable
             exportable
             search-type="query"

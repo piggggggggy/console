@@ -11,7 +11,7 @@
         <input ref="inputRef"
                :value="value"
                :placeholder="placeholder"
-               @input="$emit('input', $event.target.value)"
+               @input="$emit('update:modelValue', $event.target.value)"
                @focus="$emit('update:isFocused', true)"
                @blur="$emit('update:isFocused', false)"
                @keyup.esc="$emit('esc')"
@@ -24,7 +24,7 @@
              width="1rem"
              color="inherit"
              class="delete-button"
-             @click.stop="$emit('input', '')"
+             @click.stop="$emit('update:modelValue', '')"
         />
     </div>
 </template>
@@ -51,8 +51,8 @@ export default defineComponent<Props>({
         PI,
     },
     model: {
-        prop: 'value',
-        event: 'input',
+        prop: 'modelValue',
+        event: 'update:modelValue',
     },
     props: {
         value: {

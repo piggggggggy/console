@@ -1,7 +1,7 @@
 <template>
     <div class="g-n-b-dashboard-menu">
-        <p-tab :tabs="tabs"
-               :active-tab.sync="activeTab"
+        <p-tab v-model:active-tab="activeTab"
+               :tabs="tabs"
         >
             <template #favorite>
                 <g-n-b-dashboard-favorite :dashboard-list="dashboardList"

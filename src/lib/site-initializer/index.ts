@@ -36,6 +36,7 @@ const initRouter = (app: App, domainName?: string) => {
         SpaceRouter.init(serviceRoutes);
     }
     app.use(SpaceRouter.router);
+    SpaceRouter.router.app = app;
 };
 
 const initI18n = () => {

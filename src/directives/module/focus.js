@@ -1,5 +1,5 @@
 export default {
-    inserted(el, binding) {
+    mounted(el, binding) {
         if (binding.value) {
             el.focus();
         } else {
@@ -7,7 +7,7 @@ export default {
         }
     },
 
-    componentUpdated(el, binding) {
+    updated(el, binding) {
         if (binding.modifiers.lazy) {
             if (Boolean(binding.value) === Boolean(binding.oldValue)) {
                 return;

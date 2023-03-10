@@ -1,61 +1,47 @@
 // import Vue from 'vue';
 import { createApp } from 'vue';
 
-// import LottieVuePlayer from '@lottiefiles/vue-lottie-player';
-// import SpaceDesignSystem from '@spaceone/design-system';
+import LottieVuePlayer from '@lottiefiles/vue-lottie-player';
+import SpaceDesignSystem from '@spaceone/design-system';
+import FloatingVue from 'floating-vue';
 import { PiniaVuePlugin, createPinia } from 'pinia';
-// import PortalVue from 'portal-vue';
-// import VTooltip from 'v-tooltip';
+import PortalVue from 'portal-vue';
 
-// import directive from '@/directives';
-// import { SpaceRouter } from '@/router';
+import directive from '@/directives';
 import { store } from '@/store';
-// import { i18n } from '@/translations';
+import { i18n } from '@/translations';
 
 import { resetStore } from '@/lib/reset-pinia-store';
 import { siteInit } from '@/lib/site-initializer';
 
-// import ErrorHandler from '@/common/composables/error/errorHandler';
 
 import App from './App.vue';
-//
-// import '@/styles/style.pcss';
-// import '@spaceone/design-system/css/light-style.css';
-// import '@spaceone/design-system/dist/style.css';
-//
+
+import '@/styles/style.pcss';
+import '@spaceone/design-system/css/light-style.css';
+import '@spaceone/design-system/dist/style.css';
+
 const pinia = createPinia();
 pinia.use(resetStore);
 
-// import '@/styles/style.pcss';
-// import '@spaceone/design-system/css/light-style.css';
-// import '@spaceone/design-system/dist/style.css';
-
-// const pinia = createPinia();
-// pinia.use(resetStore);
-
-export const app = createApp({
-    pinia,
-    ...App,
-});
-
+export const app = createApp(App);
 
 /** ********** SET VUE PLUGINS ************** */
+// TODO: Must refactor
 // app.use(VTooltip, { defaultClass: 'p-tooltip', defaultBoundariesElement: document.body });
-// app.use(PortalVue);
+app.use(FloatingVue, { boundary: document.body });
+app.use(PortalVue);
 app.use(store);
 app.use(PiniaVuePlugin);
-// app.use(i18n);
+app.use(i18n);
+app.use(pinia);
 
-// directive(Vue);
-//
-// app.use(LottieVuePlayer);
-// app.use(SpaceDesignSystem, { vueI18n: i18n });
+directive(app);
+app.use(LottieVuePlayer);
+app.use(SpaceDesignSystem, { vueI18n: i18n });
 
 /** ********** INITIALIZE ************** */
 (async () => {
-    // app.config.errorHandler = (error) => ErrorHandler.handleError(error);
     await siteInit(app);
-    // app.use({ router: SpaceRouter.router });
-    // SpaceRouter.router.app = app;
     app.mount('#app');
 })();

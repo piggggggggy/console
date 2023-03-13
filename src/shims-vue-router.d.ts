@@ -1,5 +1,4 @@
-import type { Component, Vue } from 'vue';
-import type { RouteRecordNormalized } from 'vue-router';
+import type { Vue } from 'vue';
 
 import type { AccessInfo } from '@/lib/access-control/config';
 
@@ -8,13 +7,11 @@ declare module 'vue-router' {
   import type {
       RouteRecordMultipleViews as OriginRouteRecordMultipleViews,
       RouteRecordSingleView as OriginRouteRecordSingleView,
-      // Route as OriginRoute,
-      // RouteRecord as OriginRouteRecord,
       RouteMeta as OriginRouteMeta,
       Router as OriginRouter,
       RouteLocationNormalized as OriginRouteLocationNormalized,
-      // RouteRecordName as OriginRouteRecordName,
-      // VueRouter,
+      RouteLocationNormalizedLoaded as OriginRouteLocationNormalizedLoaded,
+      RouteLocation as OriginRouteLocation,
   } from 'vue-router';
 
     import type { AccessLevel } from '@/lib/access-control/config';
@@ -49,23 +46,23 @@ declare module 'vue-router' {
       meta?: RouteMeta;
       children?: RouteRecordRaw[];
   }
-  // export interface RouteRecord extends OriginRouteRecord {
-  //     meta: RouteMeta;
-  // }
   export type RouteRecordRaw = RouteRecordSingleView | RouteRecordMultipleViews;
-  // export interface Route extends OriginRoute {
-  //   meta?: RouteMeta;
-  //   matched: RouteRecord[];
-  // }
   export interface RouteLocationNormalized extends OriginRouteLocationNormalized {
       meta?: RouteMeta;
       name: string;
-      matched: RouteRecordNormalized[];
   }
+  export interface RouteLocationNormalizedLoaded extends OriginRouteLocationNormalizedLoaded {
+      meta?: RouteMeta;
+      name: string;
+  }
+  export interface RouteLocation extends OriginRouteLocation {
+      meta?: RouteMeta;
+      name: string;
+  }
+  export type RouteLegacy = RouteLocation | RouteLocationNormalized | RouteLocationNormalizedLoaded;
   export interface Router extends OriginRouter {
       app: Vue;
   }
-  // export default VueRouter;
   export {
       RouterMode,
       RawLocation,

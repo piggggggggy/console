@@ -27,9 +27,7 @@ export class SpaceRouter {
         SpaceRouter.router = createRouter({
             history: createWebHistory(),
             linkActiveClass: 'open active',
-            routes: [{
-                path: '/', name: '', meta: {}, component: { template: '<router-view/>' },
-            }],
+            routes,
         });
         app.use(SpaceRouter.router);
         SpaceRouter.router.app = app;

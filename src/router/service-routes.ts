@@ -24,29 +24,29 @@ export const ROOT_ROUTE = Object.freeze({
 
 export const serviceRoutes: RouteRecordRaw[] = [
     ...authRoutes,
-    {
-        path: '/',
-        name: ROOT_ROUTE._NAME,
-        redirect: () => {
-            if (store.getters['user/isDomainOwner'] || store.getters['user/hasSystemRole']) return { name: ADMINISTRATION_ROUTE._NAME };
-            return ({ name: HOME_DASHBOARD_ROUTE._NAME });
-        },
-        component: { template: '<router-view />' },
-        children: [
-            {
-                path: 'dashboard',
-                redirect: '/home-dashboard',
-            },
-            homeDashboardRoute,
-            dashboardsRoute,
-            administrationRoute,
-            assetInventoryRoute,
-            projectRoute,
-            alertManagerRoute,
-            costExplorerRoute,
-            myPageRoute,
-            infoRoute,
-        ],
-    },
+    // {
+    //     path: '/',
+    //     name: ROOT_ROUTE._NAME,
+    //     redirect: () => {
+    //         if (store.getters['user/isDomainOwner'] || store.getters['user/hasSystemRole']) return { name: ADMINISTRATION_ROUTE._NAME };
+    //         return ({ name: HOME_DASHBOARD_ROUTE._NAME });
+    //     },
+    //     component: { template: '<router-view />' },
+    //     children: [
+    //         {
+    //             path: 'dashboard',
+    //             redirect: '/home-dashboard',
+    //         },
+    //         homeDashboardRoute,
+    //         dashboardsRoute,
+    //         administrationRoute,
+    //         assetInventoryRoute,
+    //         projectRoute,
+    //         alertManagerRoute,
+    //         costExplorerRoute,
+    //         myPageRoute,
+    //         infoRoute,
+    //     ],
+    // },
     ...errorRoutes,
 ];

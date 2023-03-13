@@ -47,14 +47,12 @@
 
 <script lang="ts">
 import {
-    toRefs, reactive, computed, getCurrentInstance, watch,
+    toRefs, reactive, computed, watch,
 } from 'vue';
-import type { Vue } from 'vue/types/vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 
 import { isEmpty } from 'lodash';
-
-import { SpaceRouter } from '@/router';
-import { store } from '@/store';
 
 import { isUserAccessibleToRoute } from '@/lib/access-control';
 import config from '@/lib/config';
@@ -97,7 +95,9 @@ export default {
         },
     },
     setup(props) {
-        const vm = getCurrentInstance()?.proxy as Vue;
+        const route = useRoute();
+        const router = useRouter();
+        const store = useStore();
 
         const state = reactive({
             userType: computed(() => (props.admin ? 'DOMAIN_OWNER' : 'USER')),
@@ -126,7 +126,7 @@ export default {
                 }
                 return undefined;
             }),
-            showErrorMessage: vm.$route.query.error === 'error' || computed(() => store.state.display.isSignInFailed),
+            showErrorMessage: route.query.error === 'error' || computed(() => store.state.display.isSignInFailed),
         });
         const onSignIn = async (userId:string) => {
             try {
@@ -134,24 +134,24 @@ export default {
                 const defaultRoute = getDefaultRouteAfterSignIn(store.getters['user/isDomainOwner'], store.getters['user/hasSystemRole'], store.getters['user/hasPermission']);
 
                 if (!props.nextPath || !isSameUserAsPreviouslyLoggedInUser) {
-                    await vm.$router.push(defaultRoute);
+                    await router.push(defaultRoute);
                     return;
                 }
 
-                const resolvedRoute = SpaceRouter.router.resolve(props.nextPath);
-                const isAccessible = isUserAccessibleToRoute(resolvedRoute.route, store.getters['user/pagePermissionList']);
+                const resolvedRoute = router.resolve(props.nextPath);
+                const isAccessible = isUserAccessibleToRoute(resolvedRoute, store.getters['user/pagePermissionList']);
                 if (isAccessible) {
-                    await vm.$router.push(resolvedRoute.location);
+                    await router.push(resolvedRoute);
                 } else {
-                    await vm.$router.push(defaultRoute);
+                    await router.push(defaultRoute);
                 }
             } catch (e) {
                 ErrorHandler.handleError(e);
             }
         };
 
-        watch(() => vm.$route.query.error, () => {
-            state.showErrorMessage = !!vm.$route.query.error;
+        watch(() => route.query.error, () => {
+            state.showErrorMessage = !!route.query.error;
         });
 
         return {

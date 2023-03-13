@@ -31,12 +31,10 @@ const initQueryHelper = () => {
 
 const initRouter = (app: App, domainName?: string) => {
     if (!domainName) {
-        SpaceRouter.init(errorRoutes);
+        SpaceRouter.init(errorRoutes, app);
     } else {
-        SpaceRouter.init(serviceRoutes);
+        SpaceRouter.init(serviceRoutes, app);
     }
-    app.use(SpaceRouter.router);
-    SpaceRouter.router.app = app;
 };
 
 const initI18n = () => {

@@ -1,3 +1,4 @@
+import type { App } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import type { RouteRecordRaw, Router } from 'vue-router';
 
@@ -20,14 +21,18 @@ const getCurrentTime = (): number => Math.floor(Date.now() / 1000);
 export class SpaceRouter {
     static router: Router;
 
-    static init(routes: RouteRecordRaw[]) {
+    static init(routes: RouteRecordRaw[], app: App) {
         if (SpaceRouter.router) throw new Error('Router init failed: Already initiated.');
 
         SpaceRouter.router = createRouter({
             history: createWebHistory(),
             linkActiveClass: 'open active',
-            routes,
+            routes: [{
+                path: '/', name: '', meta: {}, component: { template: '<router-view/>' },
+            }],
         });
+        app.use(SpaceRouter.router);
+        SpaceRouter.router.app = app;
 
         let nextPath: string;
 
@@ -51,11 +56,12 @@ export class SpaceRouter {
 
         SpaceRouter.router.beforeEach(async (to, from, next) => {
             nextPath = to.fullPath;
+            const store = SpaceRouter.router.app.config.globalProperties.$store;
             const isTokenAlive = SpaceConnector.isTokenAlive;
-            const userPagePermissions = SpaceRouter.router.app?.$store.getters['user/pagePermissionList'];
+            const userPagePermissions = store.getters['user/pagePermissionList'];
             const routeAccessLevel = getRouteAccessLevel(to);
             const userAccessLevel = getUserAccessLevel(to.name, userPagePermissions, isTokenAlive, to.meta?.accessInfo?.referenceMenuIds);
-            const userNeedPwdReset = SpaceRouter.router.app?.$store.getters['user/isUserNeedPasswordReset'];
+            const userNeedPwdReset = store.getters['user/isUserNeedPasswordReset'];
             let nextLocation;
 
             // When a user is authenticated
@@ -86,7 +92,7 @@ export class SpaceRouter {
             // set target page as GTag page view
             if (GTag.gtag) GTag.setPageView(to);
 
-            const store = SpaceRouter.router.app?.$store;
+            const store = SpaceRouter.router.app.config.globalProperties.$store;
             if (!store) return;
 
             if (store.state.error.visibleAuthorizationError) { store.commit('error/setVisibleAuthorizationError', false); }

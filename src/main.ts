@@ -37,7 +37,7 @@ app.use(pinia);
 app.use(i18n);
 
 directive(app);
-// app.use(LottieVuePlayer);
+app.use(LottieVuePlayer);
 // app.use(SpaceDesignSystem, { vueI18n: i18n });
 
 /** ********** INITIALIZE ************** */

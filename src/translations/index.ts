@@ -54,7 +54,7 @@ export const i18n = createI18n({
     silentTranslationWarn: true,
     silentFallbackWarn: true,
     // TODO: implementation
-    globalInjection: true,
+    globalInjection: false,
 });
 
 export const setI18nLocale = async (_lang: string) => {

@@ -7,6 +7,7 @@ import FloatingVue from 'floating-vue';
 import { PiniaVuePlugin, createPinia } from 'pinia';
 import PortalVue from 'portal-vue';
 
+import App from '@/App.vue';
 import directive from '@/directives';
 import { store } from '@/store';
 import { i18n } from '@/translations';
@@ -15,7 +16,6 @@ import { resetStore } from '@/lib/reset-pinia-store';
 import { siteInit } from '@/lib/site-initializer';
 
 
-import App from './App.vue';
 
 import '@/styles/style.pcss';
 import '@spaceone/design-system/css/light-style.css';
@@ -29,15 +29,15 @@ export const app = createApp(App);
 /** ********** SET VUE PLUGINS ************** */
 // TODO: Must refactor
 // app.use(VTooltip, { defaultClass: 'p-tooltip', defaultBoundariesElement: document.body });
-app.use(FloatingVue, { boundary: document.body });
-app.use(PortalVue);
+// app.use(FloatingVue, { boundary: document.body });
+// app.use(PortalVue);
 app.use(store);
 app.use(PiniaVuePlugin);
 app.use(pinia);
 app.use(i18n);
 
 directive(app);
-app.use(LottieVuePlayer);
+// app.use(LottieVuePlayer);
 // app.use(SpaceDesignSystem, { vueI18n: i18n });
 
 /** ********** INITIALIZE ************** */

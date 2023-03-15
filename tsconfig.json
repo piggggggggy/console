@@ -7,7 +7,8 @@
       "@cloudforet/*": ["packages/cloudforet/*"],
       "@cloudforet/core-lib": ["packages/cloudforet/core-lib/dist/index.d.ts"],
       "@cloudforet/core-lib/*": ["packages/cloudforet/core-lib/dist/*"]
-    }
+    },
+    "isolatedModules": true,
   },
   "include": [ "**/*.ts", "**/*.tsx", "**/*.vue" ],
   "exclude": [ "node_modules", "src/assets", "**/*.stories.ts", "dist" ],

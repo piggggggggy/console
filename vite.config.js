@@ -2,6 +2,7 @@ import path from 'path';
 import process from 'process';
 import glob from 'glob';
 import fs from 'fs';
+import checker from 'vite-plugin-checker';
 
 import vue from '@vitejs/plugin-vue';
 import { defineConfig, loadEnv } from 'vite';
@@ -59,6 +60,9 @@ export default defineConfig(async ({ command, mode }) => {
                     }
                 }
             }),
+            checker({
+                typescript: true,
+            }),
             VueTypeImports(),
             StylelintPlugin({
                 include: ['src/**/*.{css,vue,pcss,scss}'],
@@ -80,6 +84,7 @@ export default defineConfig(async ({ command, mode }) => {
                 '@cloudforet/core-lib': path.resolve(__dirname, './packages/cloudforet/core-lib/dist/'),
                 '@cloudforet/language-pack': path.resolve(__dirname, './packages/cloudforet/language-pack/'),
                 vue: '@vue/compat'
+                // vue: path.resolve(__dirname, './node_modules/vue/dist/vue.js'),
             },
         },
         define: {

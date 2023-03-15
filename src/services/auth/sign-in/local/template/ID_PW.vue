@@ -25,7 +25,7 @@
                                   :invalid="invalid"
                                   block
                                   @update:value="checkPassword"
-                                  @keyup.enter.native="signIn"
+                                  @keyup.enter="signIn"
                     />
                 </template>
             </p-field-group>
@@ -44,18 +44,18 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import type { SetupContext } from 'vue';
 import {
-    getCurrentInstance,
     reactive,
     toRefs,
     defineComponent, computed,
 } from 'vue';
+import type { SetupContext } from 'vue';
 import type { TranslateResult } from 'vue-i18n';
-import type { Vue } from 'vue/types/vue';
+import { useI18n } from 'vue-i18n';
 
 import { PButton, PTextInput, PFieldGroup } from '@spaceone/design-system';
 
+import { SpaceRouter } from '@/router';
 import { store } from '@/store';
 
 import ErrorHandler from '@/common/composables/error/errorHandler';
@@ -77,7 +77,7 @@ export default defineComponent({
         },
     },
     setup(props, context: SetupContext) {
-        const vm = getCurrentInstance()?.proxy as Vue;
+        const { t } = useI18n();
         const state = reactive({
             userId: '' as string | undefined,
             password: '',
@@ -96,7 +96,7 @@ export default defineComponent({
         const checkUserId = () => {
             if (!state.userId) {
                 validationState.isIdValid = false;
-                validationState.idInvalidText = vm.$t('COMMON.SIGN_IN.USER_ID_REQUIRED');
+                validationState.idInvalidText = t('COMMON.SIGN_IN.USER_ID_REQUIRED');
             } else {
                 validationState.isIdValid = true;
                 validationState.idInvalidText = '';
@@ -108,7 +108,7 @@ export default defineComponent({
             if ((state.password.replace(/ /g, '').length !== state.password.length)
           || !state.password) {
                 validationState.isPasswordValid = false;
-                validationState.passwordInvalidText = vm.$t('COMMON.SIGN_IN.PASSWORD_REQUIRED');
+                validationState.passwordInvalidText = t('COMMON.SIGN_IN.PASSWORD_REQUIRED');
             } else {
                 validationState.isPasswordValid = true;
                 validationState.passwordInvalidText = '';
@@ -130,7 +130,7 @@ export default defineComponent({
                 await loadAuth().signIn(credentials, state.userId?.trim(), props.isDomainOwner ? 'DOMAIN_OWNER' : 'USER');
                 await store.dispatch('display/hideSignInErrorMessage');
                 if (store.state.user.requiredActions?.includes('UPDATE_PASSWORD')) {
-                    await vm.$router.push({ name: AUTH_ROUTE.RESET_PASSWORD._NAME });
+                    await SpaceRouter.router.push({ name: AUTH_ROUTE.RESET_PASSWORD._NAME });
                 } else {
                     context.emit('sign-in', state.userId);
                 }

@@ -23,14 +23,14 @@ export const ROOT_ROUTE = Object.freeze({
 });
 
 export const serviceRoutes: RouteRecordRaw[] = [
-    ...authRoutes,
+    // ...authRoutes,
     {
         path: '/',
         name: ROOT_ROUTE._NAME,
-        redirect: () => {
-            if (store.getters['user/isDomainOwner'] || store.getters['user/hasSystemRole']) return { name: ADMINISTRATION_ROUTE._NAME };
-            return ({ name: HOME_DASHBOARD_ROUTE._NAME });
-        },
+        // redirect: () => {
+        //     if (store.getters['user/isDomainOwner'] || store.getters['user/hasSystemRole']) return { name: ADMINISTRATION_ROUTE._NAME };
+        //     return ({ name: HOME_DASHBOARD_ROUTE._NAME });
+        // },
         component: { template: '<router-view />' },
         children: [
             // {
@@ -48,5 +48,5 @@ export const serviceRoutes: RouteRecordRaw[] = [
             // infoRoute,
         ],
     },
-    ...errorRoutes,
+    // ...errorRoutes,
 ];

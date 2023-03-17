@@ -2,7 +2,6 @@ import path from 'path';
 import process from 'process';
 import glob from 'glob';
 import fs from 'fs';
-import checker from 'vite-plugin-checker';
 
 import vue from '@vitejs/plugin-vue';
 import { defineConfig, loadEnv } from 'vite';
@@ -55,13 +54,10 @@ export default defineConfig(async ({ command, mode }) => {
                 template: {
                     compilerOptions: {
                         compatConfig: {
-                            MODE: 2
+                            MODE: 3
                         }
                     }
                 }
-            }),
-            checker({
-                typescript: true,
             }),
             VueTypeImports(),
             StylelintPlugin({

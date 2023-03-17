@@ -1,21 +1,10 @@
 <template>
-    <div v-cloak
-         id="app"
-    >
-        <template v-if="$store.state.display.isInitialized">
-            <router-view />
-        </template>
+    <div id="app">
+        gsadfasdfas
     </div>
 </template>
 
-<script>
-export default {
-    name: 'App',
-    setup() {
-        return {
-        };
-    },
-};
+<script setup lang="ts">
 </script>
 
 <style lang="postcss">

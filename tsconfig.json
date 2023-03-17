@@ -1,7 +1,7 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "types": ["vitest/globals"],
+    "types": ["vitest/globals", "@vue/compiler-sfc"],
     "paths": {
       "@/*": ["src/*", "packages/cloudforet/core-lib/src/*"],
       "@cloudforet/*": ["packages/cloudforet/*"],
@@ -9,6 +9,7 @@
       "@cloudforet/core-lib/*": ["packages/cloudforet/core-lib/dist/*"]
     },
     "isolatedModules": true,
+    "skipLibCheck": true
   },
   "include": [ "**/*.ts", "**/*.tsx", "**/*.vue" ],
   "exclude": [ "node_modules", "src/assets", "**/*.stories.ts", "dist" ],

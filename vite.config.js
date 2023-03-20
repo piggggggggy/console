@@ -51,13 +51,14 @@ export default defineConfig(async ({ command, mode }) => {
         // },
         plugins: [
             vue({
-                template: {
-                    compilerOptions: {
-                        compatConfig: {
-                            MODE: 3
-                        }
-                    }
-                }
+                // vueCompiler: 'vue3',
+                // template: {
+                //     compilerOptions: {
+                //         compatConfig: {
+                //             MODE: 3
+                //         }
+                //     }
+                // }
             }),
             VueTypeImports(),
             StylelintPlugin({
@@ -79,14 +80,11 @@ export default defineConfig(async ({ command, mode }) => {
                 '@': path.resolve(__dirname, './src'),
                 '@cloudforet/core-lib': path.resolve(__dirname, './packages/cloudforet/core-lib/dist/'),
                 '@cloudforet/language-pack': path.resolve(__dirname, './packages/cloudforet/language-pack/'),
-                vue: '@vue/compat'
-                // vue: path.resolve(__dirname, './node_modules/vue/dist/vue.js'),
+                // vue: '@vue/compat'
+                vue: path.resolve(__dirname, './node_modules/vue/dist/vue.d.ts'),
             },
         },
-        scriptCache: true,
-        compliler: {
-            version: '3.2.22'
-        },
+        scriptCache: false,
         debug: true,
         define: {
             VITE_APP_VER: JSON.stringify(process.env.npm_package_version),

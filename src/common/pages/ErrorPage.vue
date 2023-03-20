@@ -15,19 +15,19 @@
                     {{ $t('COMMON.ERROR.404_MSG') }}
                 </template>
             </h3>
-            <p-button class="go-back-button"
-                      style-type="primary"
-                      size="md"
-                      @click="$router.go(-1)"
-            >
-                {{ $t('COMMON.ERROR.GO_BACK') }}
-            </p-button>
+            <!--            <p-button class="go-back-button"-->
+            <!--                      style-type="primary"-->
+            <!--                      size="md"-->
+            <!--                      @click="$router.go(-1)"-->
+            <!--            >-->
+            <!--                {{ $t('COMMON.ERROR.GO_BACK') }}-->
+            <!--            </p-button>-->
         </article>
     </section>
 </template>
 
 <script setup lang="ts">
-import { PButton } from '@spaceone/design-system';
+// import { PButton } from '@spaceone/design-system';
 
 const props = withDefaults(defineProps<{ statusCode: string }>(), {
     statusCode: '404',

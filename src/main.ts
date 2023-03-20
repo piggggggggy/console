@@ -44,5 +44,5 @@ directive(app);
 /** ********** INITIALIZE ************** */
 (async () => {
     await siteInit(app);
-    app.mount('#app');
+    app.mount('#app', true);
 })();

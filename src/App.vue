@@ -5,6 +5,10 @@
 </template>
 
 <script setup lang="ts">
+
+
+const a = 'asdfasdfa';
+
 </script>
 
 <style lang="postcss">
@@ -14,7 +18,6 @@
     overflow-y: hidden;
     width: 100vw;
     height: 100vh;
-    background-color: $bg-color;
     .gnb {
         position: fixed;
         width: 100%;

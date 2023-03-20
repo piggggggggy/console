@@ -4,7 +4,7 @@
 import { createI18n } from 'vue-i18n';
 
 import type { LocaleMessage } from '@intlify/core-base';
-import { messages } from '@spaceone/design-system';
+// import { messages } from '@spaceone/design-system';
 
 import en from '@cloudforet/language-pack/en.json';
 import ja from '@cloudforet/language-pack/ja.json';
@@ -16,9 +16,14 @@ import { loadFonts } from '@/styles/fonts';
 //
 // Vue.use(VueI18n);
 
-const componentEN = messages.en;
-const componentJA = messages.jp;
-const componentKO = messages.ko;
+// const componentEN = messages.en;
+// const componentJA = messages.jp;
+// const componentKO = messages.ko;
+const componentEN = {};
+const componentJA = {};
+const componentKO = {
+
+};
 
 // simple recursive remove keys with empty value
 const removeEmpty = (obj: any): LocaleMessage => Object.keys(obj)

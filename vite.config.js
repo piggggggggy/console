@@ -36,19 +36,19 @@ export default defineConfig(async ({ command, mode }) => {
     if (command === 'serve') { console.log('serve mode') }
     else { console.log('build mode') }
 
-    let mirinaeLinked = false;
-    if (command === 'serve') {
-        try {
-            mirinaeLinked = await isPackageLinked('@spaceone/design-system')
-        } catch (e) {
-            console.warn(e)
-        }
-    }
+    // let mirinaeLinked = false;
+    // if (command === 'serve') {
+    //     try {
+    //         mirinaeLinked = await isPackageLinked('@spaceone/design-system')
+    //     } catch (e) {
+    //         console.warn(e)
+    //     }
+    // }
 
     return {
-        optimizeDeps: {
-            include: mirinaeLinked ? ['@spaceone/design-system/tailwind.config.cjs'] : [],
-        },
+        // optimizeDeps: {
+        //     include: mirinaeLinked ? ['@spaceone/design-system/tailwind.config.cjs'] : [],
+        // },
         plugins: [
             vue({
                 template: {
@@ -83,6 +83,11 @@ export default defineConfig(async ({ command, mode }) => {
                 // vue: path.resolve(__dirname, './node_modules/vue/dist/vue.js'),
             },
         },
+        scriptCache: true,
+        compliler: {
+            version: '3.2.22'
+        },
+        debug: true,
         define: {
             VITE_APP_VER: JSON.stringify(process.env.npm_package_version),
             // Add env variables here

@@ -10,7 +10,7 @@ import { assetUrlConverter } from '@/lib/helper/asset-helper';
 
 import ErrorHandler from '@/common/composables/error/errorHandler';
 
-import { indigo } from '@/styles/colors';
+// import { indigo } from '@/styles/colors';
 
 let lastLoadedTime = 0;
 
@@ -41,7 +41,8 @@ export const load: Action<ProviderReferenceState, any> = async ({ commit, state 
                 label: providerInfo.tags.label || providerInfo.name,
                 name: providerInfo.name,
                 icon: assetUrlConverter(providerInfo.tags.icon),
-                color: providerInfo.tags.color || indigo[400],
+                // color: providerInfo.tags.color || indigo[400],
+                color: providerInfo.tags.color,
                 linkTemplate: providerInfo.tags.external_link_template,
             };
         });
@@ -60,7 +61,8 @@ export const sync: Action<ProviderReferenceState, any> = ({ state, commit }, pro
             label: providerInfo.tags.label || providerInfo.name,
             name: providerInfo.name,
             icon: assetUrlConverter(providerInfo.tags.icon),
-            color: providerInfo.tags.color || indigo[400],
+            // color: providerInfo.tags.color || indigo[400],
+            color: providerInfo.tags.color,
             linkTemplate: providerInfo.tags.external_link_template,
         },
     };

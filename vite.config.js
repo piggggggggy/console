@@ -5,7 +5,7 @@ import fs from 'fs';
 
 import vue from '@vitejs/plugin-vue';
 import { defineConfig, loadEnv } from 'vite';
-import StylelintPlugin from 'vite-plugin-stylelint';
+// import StylelintPlugin from 'vite-plugin-stylelint';
 import VueTypeImports from 'vite-plugin-vue-type-imports';
 
 const isPackageLinked = (packageName) => new Promise((resolve, reject) => {
@@ -61,12 +61,12 @@ export default defineConfig(async ({ command, mode }) => {
                 // }
             }),
             VueTypeImports(),
-            StylelintPlugin({
-                include: ['src/**/*.{css,vue,pcss,scss}'],
-                exclude: ['node_modules'],
-                lintOnStart: false,
-                emitErrorAsWarning: true,
-            }),
+            // StylelintPlugin({
+            //     include: ['src/**/*.{css,vue,pcss,scss}'],
+            //     exclude: ['node_modules'],
+            //     lintOnStart: false,
+            //     emitErrorAsWarning: true,
+            // }),
         ],
         server: { port: 8080 },
         preview: { port: 8080 },

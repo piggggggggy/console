@@ -11,7 +11,7 @@ export interface DataTableAddParameters {
     widget_id: string;
     name?: string;
     source_type: DataTableSourceType;
-    options?: DataTableOptions;
+    options?: Partial<DataTableOptions>;
     tags?: Tags;
     vars?: DashboardVars;
 }

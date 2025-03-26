@@ -8,7 +8,7 @@ import type { DataTableOptions } from '@/common/modules/widgets/types/widget-mod
 export interface DataTableUpdateParameters {
     data_table_id: string;
     name?: string;
-    options?: DataTableOptions;
+    options?: Partial<DataTableOptions>;
     tags?: Tags;
     vars?: DashboardVars;
 }

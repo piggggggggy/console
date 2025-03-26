@@ -12,7 +12,7 @@ export interface DataTableTransformParameters {
     widget_id: string;
     name?: string;
     operator: DataTableOperator;
-    options?: DataTableOptions;
+    options?: Partial<DataTableOptions>;
     tags?: Tags;
     vars?: DashboardVars;
 }

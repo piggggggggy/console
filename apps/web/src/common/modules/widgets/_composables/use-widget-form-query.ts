@@ -9,9 +9,10 @@ import type { WidgetModel, WidgetUpdateParams } from '@/api-clients/dashboard/_t
 import { usePrivateDataTableApi } from '@/api-clients/dashboard/private-data-table/composables/use-private-data-table-api';
 import { usePrivateWidgetApi } from '@/api-clients/dashboard/private-widget/composables/use-private-widget-api';
 import { usePublicDataTableApi } from '@/api-clients/dashboard/public-data-table/composables/use-public-data-table-api';
+import type { DataTableListParameters } from '@/api-clients/dashboard/public-data-table/schema/api-verbs/list';
 import type { DataTableUpdateParameters } from '@/api-clients/dashboard/public-data-table/schema/api-verbs/update';
 import { usePublicWidgetApi } from '@/api-clients/dashboard/public-widget/composables/use-public-widget-api';
-import { _useAPIQueryKey } from '@/query/composables/use-api-query-key';
+import { _useAPIQueryKey } from '@/query/query-key/use-api-query-key';
 
 import type { DataTableModel } from '@/common/modules/widgets/types/widget-data-table-type';
 
@@ -70,6 +71,7 @@ export const useWidgetFormQuery = ({
 
     /* Query Keys */
     const { key: publicWidgetGetQueryKey, params: publicWidgetGetParams } = _useAPIQueryKey('dashboard', 'public-widget', 'get', {
+        id: computed(() => widgetId?.value as string),
         params: computed(() => ({
             widget_id: widgetId?.value as string,
         })),
@@ -78,6 +80,7 @@ export const useWidgetFormQuery = ({
         key: privateWidgetGetQueryKey,
         params: privateWidgetGetParams,
     } = _useAPIQueryKey('dashboard', 'private-widget', 'get', {
+        id: computed(() => widgetId?.value as string),
         params: computed(() => ({
             widget_id: widgetId?.value as string,
         })),
@@ -94,7 +97,7 @@ export const useWidgetFormQuery = ({
         key: privateDataTableListQueryKey,
         params: privateDataTableListParams,
     } = _useAPIQueryKey('dashboard', 'private-data-table', 'list', {
-        params: computed(() => ({
+        params: computed<DataTableListParameters>(() => ({
             widget_id: widgetId?.value as string,
         })),
     });

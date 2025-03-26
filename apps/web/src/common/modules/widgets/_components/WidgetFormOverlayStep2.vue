@@ -203,7 +203,6 @@ const { mutate: updateDashboard } = useMutation(
         mutationFn: fetcher.updateDashboardFn,
         onSuccess: (data) => {
             const dashboardQueryKey = state.isPrivate ? keys.privateDashboardGetQueryKey : keys.publicDashboardGetQueryKey;
-            // queryClient.invalidateQueries({ queryKey: dashboardQueryKey.value });
             queryClient.setQueryData(dashboardQueryKey.value, () => data);
         },
     },
@@ -240,22 +239,6 @@ const reset = () => {
     dashboardDetailStore.setVars(state.varsSnapshot);
     dashboardDetailStore.setOptions(state.dashboardOptionsSnapshot);
 };
-// const loadOverlayWidget = async () => {
-//     await queryClient.invalidateQueries({
-//         queryKey: [
-//             ...(state.isPrivate ? widgetKeys.privateWidgetLoadQueryKey.value : widgetKeys.publicWidgetLoadQueryKey.value),
-//             dashboardDetailState.dashboardId,
-//             widgetGenerateState.widgetId,
-//         ],
-//     });
-//     await queryClient.invalidateQueries({
-//         queryKey: [
-//             ...(state.isPrivate ? widgetKeys.privateWidgetLoadSumQueryKey.value : widgetKeys.publicWidgetLoadSumQueryKey.value),
-//             dashboardDetailState.dashboardId,
-//             widgetGenerateState.widgetId,
-//         ],
-//     });
-// };
 
 /* Event */
 const handleChangeWidgetSize = (widgetSize: string) => {

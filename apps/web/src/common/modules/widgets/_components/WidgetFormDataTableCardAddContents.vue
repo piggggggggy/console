@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {
-    computed, defineExpose, onMounted, reactive, watch,
+    computed, defineExpose, onMounted, reactive, watch, toRef,
 } from 'vue';
 
 import { useMutation } from '@tanstack/vue-query';
@@ -17,6 +17,7 @@ import type { PrivateDataTableModel } from '@/api-clients/dashboard/private-data
 import type { DataTableDeleteParameters } from '@/api-clients/dashboard/public-data-table/schema/api-verbs/delete';
 import type { DataTableUpdateParameters } from '@/api-clients/dashboard/public-data-table/schema/api-verbs/update';
 import type { PublicDataTableModel } from '@/api-clients/dashboard/public-data-table/schema/model';
+import { _useAPIQueryKey } from '@/query/query-key/use-api-query-key';
 import { i18n } from '@/translations';
 
 import { useAllReferenceStore } from '@/store/reference/all-reference-store';
@@ -53,7 +54,6 @@ import type {
 } from '@/common/modules/widgets/types/widget-model';
 
 import { GROUP_BY } from '@/services/cost-explorer/constants/cost-explorer-constant';
-import { useDashboardDetailInfoStore } from '@/services/dashboards/stores/dashboard-detail-info-store';
 
 interface Props {
     selected: boolean;
@@ -68,8 +68,6 @@ const props = defineProps<Props>();
 const widgetGenerateStore = useWidgetGenerateStore();
 const widgetGenerateState = widgetGenerateStore.state;
 const allReferenceStore = useAllReferenceStore();
-const dashboardDetailStore = useDashboardDetailInfoStore();
-const dashboardDetailState = dashboardDetailStore.state;
 
 /* Query */
 const {
@@ -230,29 +228,41 @@ const modalState = reactive({
     referenceDataTableName: '',
 });
 
+/* Query Keys */
+const currentDataTableId = toRef(state, 'dataTableId');
+const currentWidgetId = computed(() => widgetGenerateState.widgetId as string);
+
+const { key: privateDataTableLoadQueryKey } = _useAPIQueryKey('dashboard', 'private-data-table', 'load', {
+    id: currentDataTableId,
+});
+const { key: publicDataTableLoadQueryKey } = _useAPIQueryKey('dashboard', 'public-data-table', 'load', {
+    id: currentDataTableId,
+});
+const { key: privateWidgetLoadQueryKey } = _useAPIQueryKey('dashboard', 'private-widget', 'load', {
+    id: currentWidgetId,
+});
+const { key: publicWidgetLoadQueryKey } = _useAPIQueryKey('dashboard', 'public-widget', 'load', {
+    id: currentWidgetId,
+});
+const { key: privateWidgetLoadSumQueryKey } = _useAPIQueryKey('dashboard', 'private-widget', 'load-sum', {
+    id: currentWidgetId,
+});
+const { key: publicWidgetLoadSumQueryKey } = _useAPIQueryKey('dashboard', 'public-widget', 'load-sum', {
+    id: currentWidgetId,
+});
+
 /* APIs */
-const invalidateLoadQueries = async (data: DataTableModel) => {
-    await queryClient.invalidateQueries({
-        queryKey: [
-            ...(state.isPrivate ? keys.privateDataTableLoadQueryKey.value : keys.publicDataTableLoadQueryKey.value),
-            data.data_table_id,
-        ],
-    });
-    await queryClient.invalidateQueries({
-        queryKey: [
-            ...(state.isPrivate ? keys.privateWidgetLoadQueryKey.value : keys.publicWidgetLoadQueryKey.value),
-            dashboardDetailState.dashboardId,
-            widgetGenerateState.widgetId,
-        ],
-    });
-    await queryClient.invalidateQueries({
-        queryKey: [
-            ...(state.isPrivate ? keys.privateWidgetLoadSumQueryKey.value : keys.publicWidgetLoadSumQueryKey.value),
-            dashboardDetailState.dashboardId,
-            widgetGenerateState.widgetId,
-        ],
-    });
+const invalidateLoadQueries = async () => {
+    await Promise.all([
+        queryClient.invalidateQueries({ queryKey: privateDataTableLoadQueryKey.value }),
+        queryClient.invalidateQueries({ queryKey: publicDataTableLoadQueryKey.value }),
+        queryClient.invalidateQueries({ queryKey: privateWidgetLoadQueryKey.value }),
+        queryClient.invalidateQueries({ queryKey: publicWidgetLoadQueryKey.value }),
+        queryClient.invalidateQueries({ queryKey: privateWidgetLoadSumQueryKey.value }),
+        queryClient.invalidateQueries({ queryKey: publicWidgetLoadSumQueryKey.value }),
+    ]);
 };
+
 const { mutateAsync: updateDataTableMutation } = useMutation({
     mutationFn: fetcher.updateDataTableFn,
     onSuccess: async (data) => {
@@ -271,7 +281,7 @@ const { mutateAsync: updateDataTableMutation } = useMutation({
             }
             return oldData;
         });
-        await invalidateLoadQueries(data);
+        await invalidateLoadQueries();
 
         setInitialDataTableForm();
         state.filterFormKey = getRandomId();
@@ -447,7 +457,7 @@ const handleUpdateDataTable = async () => {
         const _widgetOptions = cloneDeep(widget.value?.options);
         const sanitizedOptions = sanitizeWidgetOptions(_widgetOptions, widget.value?.widget_type, result);
         await updateWidget({
-            widget_id: widgetGenerateState.widgetId,
+            widget_id: widgetGenerateState.widgetId as string,
             state: 'INACTIVE',
             options: sanitizedOptions,
         });

@@ -20,8 +20,8 @@ import type { PublicDashboardModel } from '@/api-clients/dashboard/public-dashbo
 import { usePublicFolderApi } from '@/api-clients/dashboard/public-folder/composables/use-public-folder-api';
 import type { PublicFolderUpdateParameters } from '@/api-clients/dashboard/public-folder/schema/api-verbs/update';
 import type { PublicFolderModel } from '@/api-clients/dashboard/public-folder/schema/model';
-import type { QueryKeyArray } from '@/query/_types/query-key-type';
-import { _useAPIQueryKey } from '@/query/composables/use-api-query-key';
+import type { QueryKeyArray } from '@/query/query-key/_types/query-key-type';
+import { _useAPIQueryKey } from '@/query/query-key/use-api-query-key';
 
 import { useAppContextStore } from '@/store/app-context/app-context-store';
 import { useUserWorkspaceStore } from '@/store/app-context/workspace/user-workspace-store';

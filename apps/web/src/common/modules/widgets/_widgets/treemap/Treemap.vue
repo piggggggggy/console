@@ -17,19 +17,18 @@ import {
 
 import { numberFormatter } from '@cloudforet/utils';
 
-import type { WidgetLoadParams, WidgetLoadResponse } from '@/api-clients/dashboard/_types/widget-type';
+import type { WidgetLoadResponse } from '@/api-clients/dashboard/_types/widget-type';
+import { usePrivateDataTableApi } from '@/api-clients/dashboard/private-data-table/composables/use-private-data-table-api';
+import { usePublicDataTableApi } from '@/api-clients/dashboard/public-data-table/composables/use-public-data-table-api';
 import { i18n } from '@/translations';
 
 import ErrorHandler from '@/common/composables/error/errorHandler';
 import WidgetFrame from '@/common/modules/widgets/_components/WidgetFrame.vue';
 import { useWidgetDateRange } from '@/common/modules/widgets/_composables/use-widget-date-range';
-import { useWidgetFormQuery } from '@/common/modules/widgets/_composables/use-widget-form-query';
 import { useWidgetFrame } from '@/common/modules/widgets/_composables/use-widget-frame';
+import { useWidgetLoadQueryContext } from '@/common/modules/widgets/_composables/use-widget-query-context';
 import { DATE_FIELD, WIDGET_LOAD_STALE_TIME } from '@/common/modules/widgets/_constants/widget-constant';
 import { DATE_FORMAT } from '@/common/modules/widgets/_constants/widget-field-constant';
-import {
-    normalizeAndSerializeVars,
-} from '@/common/modules/widgets/_helpers/global-variable-helper';
 import {
     getReferenceLabel,
 } from '@/common/modules/widgets/_helpers/widget-date-helper';
@@ -61,10 +60,8 @@ interface ChartData {
 const props = defineProps<WidgetProps>();
 const emit = defineEmits<WidgetEmit>();
 
-const { keys, api } = useWidgetFormQuery({
-    widgetId: computed(() => props.widgetId),
-    preventLoad: true,
-});
+const { publicDataTableAPI } = usePublicDataTableApi();
+const { privateDataTableAPI } = usePrivateDataTableApi();
 
 const { dateRange } = useWidgetDateRange({
     dateRangeFieldValue: computed(() => (props.widgetOptions?.dateRange?.value as DateRangeValue)),
@@ -139,36 +136,10 @@ const widgetOptionsState = reactive({
     displaySeriesLabelInfo: computed<DisplaySeriesLabelValue>(() => props.widgetOptions?.displaySeriesLabel?.value as DisplaySeriesLabelValue),
 });
 
-/* Api */
-const fetchWidgetData = async (params: WidgetLoadParams): Promise<WidgetLoadResponse> => {
-    const defaultFetcher = state.isPrivateWidget
-        ? api.privateWidgetAPI.load
-        : api.publicWidgetAPI.load;
-    const res = await defaultFetcher(params);
-    return res;
-};
-
-const queryKey = computed(() => [
-    ...(state.isPrivateWidget ? keys.privateWidgetLoadQueryKey.value : keys.publicWidgetLoadQueryKey.value),
-    props.dashboardId,
-    props.widgetId,
-    props.widgetName,
-    {
-        start: dateRange.value.start,
-        end: dateRange.value.end,
-        granularity: widgetOptionsState.granularityInfo?.granularity,
-        dataTableId: props.dataTableId,
-        // dataTableOptions: normalizeAndSerializeDataTableOptions(state.dataTable?.options || {}),
-        // dataTables: normalizeAndSerializeDataTableOptions((props.dataTables || []).map((d) => d?.options || {})),
-        groupBy: widgetOptionsState.categoryByInfo?.data,
-        count: widgetOptionsState.categoryByInfo?.count,
-        vars: normalizeAndSerializeVars(props.dashboardVars),
-    },
-]);
-
-const queryResult = useQuery({
-    queryKey,
-    queryFn: () => fetchWidgetData({
+/* Query */
+const { fetcher, key } = useWidgetLoadQueryContext({
+    widgetId: computed(() => props.widgetId),
+    params: computed(() => ({
         widget_id: props.widgetId,
         granularity: widgetOptionsState.granularityInfo?.granularity,
         group_by: widgetOptionsState.categoryByInfo?.data ? [widgetOptionsState.categoryByInfo?.data as string] : [],
@@ -176,15 +147,24 @@ const queryResult = useQuery({
         page: { start: 0, limit: widgetOptionsState.categoryByInfo?.count ?? 0 },
         vars: props.dashboardVars,
         ...getWidgetLoadApiQueryDateRange(widgetOptionsState.granularityInfo?.granularity, dateRange.value),
-    }),
+    })),
+    deps: computed(() => ({
+        widgetName: props.widgetName,
+        dataTableId: props.dataTableId,
+    })),
+});
+
+const queryResult = useQuery({
+    queryKey: key,
+    queryFn: fetcher,
     enabled: computed(() => props.widgetState !== 'INACTIVE' && !!state.dataTable),
     staleTime: WIDGET_LOAD_STALE_TIME,
 });
 
 const widgetLoading = computed<boolean>(() => queryResult.isFetching.value || state.dataTableLoading);
 const errorMessage = computed<string>(() => {
-    if (!state.dataTable) return i18n.t('COMMON.WIDGETS.NO_DATA_TABLE_ERROR_MESSAGE');
-    return queryResult.error?.value?.message;
+    if (!state.dataTable) return i18n.t('COMMON.WIDGETS.NO_DATA_TABLE_ERROR_MESSAGE') as string;
+    return queryResult.error?.value?.message as string;
 });
 
 const drawChart = (rawData: WidgetLoadResponse|null) => {
@@ -247,11 +227,11 @@ useResizeObserver(chartContext, throttle(() => {
 watch(() => props.dataTableId, async (newDataTableId) => {
     if (!newDataTableId) return;
     state.dataTableLoading = true;
-    const fetcher = state.isPrivateWidget
-        ? api.privateDataTableAPI.get
-        : api.publicDataTableAPI.get;
+    const _fetcher = state.isPrivateWidget
+        ? privateDataTableAPI.get
+        : publicDataTableAPI.get;
     try {
-        state.dataTable = await fetcher({ data_table_id: newDataTableId });
+        state.dataTable = await _fetcher({ data_table_id: newDataTableId });
     } catch (e) {
         ErrorHandler.handleError(e);
     } finally {

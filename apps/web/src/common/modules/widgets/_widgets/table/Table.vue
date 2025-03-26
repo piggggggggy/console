@@ -9,15 +9,16 @@ import { sortBy } from 'lodash';
 import type { Sort } from '@cloudforet/core-lib/space-connector/type';
 import { PPagination } from '@cloudforet/mirinae';
 
-import type { WidgetLoadParams, WidgetLoadResponse, WidgetLoadSumParams } from '@/api-clients/dashboard/_types/widget-type';
-import { _useAPIQueryKey } from '@/query/composables/use-api-query-key';
+import type { WidgetLoadResponse } from '@/api-clients/dashboard/_types/widget-type';
+import { usePrivateDataTableApi } from '@/api-clients/dashboard/private-data-table/composables/use-private-data-table-api';
+import { usePublicDataTableApi } from '@/api-clients/dashboard/public-data-table/composables/use-public-data-table-api';
 import { i18n } from '@/translations';
 
 import ErrorHandler from '@/common/composables/error/errorHandler';
 import WidgetFrame from '@/common/modules/widgets/_components/WidgetFrame.vue';
 import { useWidgetDateRange } from '@/common/modules/widgets/_composables/use-widget-date-range';
-import { useWidgetFormQuery } from '@/common/modules/widgets/_composables/use-widget-form-query';
 import { useWidgetFrame } from '@/common/modules/widgets/_composables/use-widget-frame';
+import { useWidgetLoadQueryContext, useWidgetLoadSumQueryContext } from '@/common/modules/widgets/_composables/use-widget-query-context';
 import { DATA_TABLE_OPERATOR } from '@/common/modules/widgets/_constants/data-table-constant';
 import { WIDGET_LOAD_STALE_TIME } from '@/common/modules/widgets/_constants/widget-constant';
 import { SUB_TOTAL_NAME } from '@/common/modules/widgets/_constants/widget-field-constant';
@@ -46,88 +47,13 @@ import type {
 import type { DataInfo } from '@/common/modules/widgets/types/widget-model';
 
 
+
 const REFERENCE_FIELDS = ['Project', 'Workspace', 'Region', 'Service Account'];
 
 const props = defineProps<WidgetProps>();
 const emit = defineEmits<WidgetEmit>();
-
-const { api } = useWidgetFormQuery({
-    widgetId: computed(() => props.widgetId),
-    preventLoad: true,
-});
-const { key: publicWidgetLoadQueryKey, params: publicWidgetLoadParams } = _useAPIQueryKey('dashboard', 'public-widget', 'load', {
-    id: computed(() => props.widgetId),
-    params: computed(() => ({
-        widget_id: props.widgetId,
-        start: dateRange.value.start,
-        end: dateRange.value.end,
-        sort: getTableDefaultSortBy(state.sortBy),
-        page: {
-            start: (state.pageSize * (state.thisPage - 1)) + 1,
-            limit: state.pageSize,
-        },
-        group_by: (widgetOptionsState.groupByInfo?.data as string[]) ?? [],
-        vars: props.dashboardVars,
-        granularity: widgetOptionsState.granularityInfo?.granularity,
-    })),
-    deps: computed(() => ({
-        widgetName: props.widgetName,
-        dataTableId: props.dataTableId,
-    })),
-});
-
-const { key: privateWidgetLoadQueryKey, params: privateWidgetLoadParams } = _useAPIQueryKey('dashboard', 'private-widget', 'load', {
-    id: computed(() => props.widgetId),
-    params: computed(() => ({
-        widget_id: props.widgetId,
-        start: dateRange.value.start,
-        end: dateRange.value.end,
-        sort: getTableDefaultSortBy(state.sortBy),
-        page: {
-            start: (state.pageSize * (state.thisPage - 1)) + 1,
-            limit: state.pageSize,
-        },
-        group_by: (widgetOptionsState.groupByInfo?.data as string[]) ?? [],
-        vars: props.dashboardVars,
-        granularity: widgetOptionsState.granularityInfo?.granularity,
-    })),
-    deps: computed(() => ({
-        widgetName: props.widgetName,
-        dataTableId: props.dataTableId,
-    })),
-});
-
-const { key: publicWidgetLoadSumQueryKey, params: publicWidgetLoadSumParams } = _useAPIQueryKey('dashboard', 'public-widget', 'load-sum', {
-    id: computed(() => props.widgetId),
-    params: computed(() => ({
-        widget_id: props.widgetId,
-        start: dateRange.value.start,
-        end: dateRange.value.end,
-        vars: props.dashboardVars,
-        granularity: widgetOptionsState.granularityInfo?.granularity,
-    })),
-    deps: computed(() => ({
-        widgetName: props.widgetName,
-        dataTableId: props.dataTableId,
-        enabledTotal: !!widgetOptionsState.totalInfo?.toggleValue,
-    })),
-});
-
-const { key: privateWidgetLoadSumQueryKey, params: privateWidgetLoadSumParams } = _useAPIQueryKey('dashboard', 'private-widget', 'load-sum', {
-    id: computed(() => props.widgetId),
-    params: computed(() => ({
-        widget_id: props.widgetId,
-        start: dateRange.value.start,
-        end: dateRange.value.end,
-        vars: props.dashboardVars,
-        granularity: widgetOptionsState.granularityInfo?.granularity,
-    })),
-    deps: computed(() => ({
-        widgetName: props.widgetName,
-        dataTableId: props.dataTableId,
-        enabledTotal: !!widgetOptionsState.totalInfo?.toggleValue,
-    })),
-});
+const { publicDataTableAPI } = usePublicDataTableApi();
+const { privateDataTableAPI } = usePrivateDataTableApi();
 
 const { dateRange } = useWidgetDateRange({
     dateRangeFieldValue: computed(() => (props.widgetOptions?.dateRange?.value as DateRangeValue)),
@@ -213,27 +139,51 @@ const getTableDefaultSortBy = (_sortBy: Sort[]) => {
     const defaultSortBy = [{ key: (widgetOptionsState.dataFieldInfo?.data as string[])?.[0], desc: true }];
     return defaultSortBy;
 };
-const fetchWidgetData = async (params: WidgetLoadParams): Promise<WidgetLoadResponse> => {
-    const defaultFetcher = state.isPrivateWidget
-        ? api.privateWidgetAPI.load
-        : api.publicWidgetAPI.load;
-    const res = await defaultFetcher(params);
-    return res;
-};
 
-const fetchWidgetSumData = async (params: WidgetLoadSumParams): Promise<WidgetLoadResponse> => {
-    const defaultFetcher = state.isPrivateWidget
-        ? api.privateWidgetAPI.loadSum
-        : api.publicWidgetAPI.loadSum;
-    const res = await defaultFetcher(params);
-    return res;
-};
+
+// Widget Load
+const { fetcher: loadFetcher, key: loadKey } = useWidgetLoadQueryContext({
+    widgetId: computed(() => props.widgetId),
+    params: computed(() => ({
+        widget_id: props.widgetId,
+        start: dateRange.value.start,
+        end: dateRange.value.end,
+        sort: getTableDefaultSortBy(state.sortBy),
+        page: {
+            start: (state.pageSize * (state.thisPage - 1)) + 1,
+            limit: state.pageSize,
+        },
+        group_by: (widgetOptionsState.groupByInfo?.data as string[]) ?? [],
+        vars: props.dashboardVars,
+        granularity: widgetOptionsState.granularityInfo?.granularity,
+    })),
+    deps: computed(() => ({
+        widgetName: props.widgetName,
+        dataTableId: props.dataTableId,
+    })),
+});
+
+const { fetcher: loadSumFetcher, key: loadSumKey } = useWidgetLoadSumQueryContext({
+    widgetId: computed(() => props.widgetId),
+    params: computed(() => ({
+        widget_id: props.widgetId,
+        start: dateRange.value.start,
+        end: dateRange.value.end,
+        vars: props.dashboardVars,
+        granularity: widgetOptionsState.granularityInfo?.granularity,
+    })),
+    deps: computed(() => ({
+        widgetName: props.widgetName,
+        dataTableId: props.dataTableId,
+        enabledTotal: !!widgetOptionsState.totalInfo?.toggleValue,
+    })),
+});
 
 const queryResults = useQueries({
     queries: [
         {
-            queryKey: state.isPrivateWidget ? privateWidgetLoadQueryKey : publicWidgetLoadQueryKey,
-            queryFn: () => fetchWidgetData(state.isPrivateWidget ? privateWidgetLoadParams.value : publicWidgetLoadParams.value),
+            queryKey: loadKey,
+            queryFn: loadFetcher,
             enabled: computed<boolean>(() => {
                 const widgetActive = props.widgetState !== 'INACTIVE';
                 const dataTableReady = !!state.dataTable;
@@ -243,8 +193,8 @@ const queryResults = useQueries({
             staleTime: WIDGET_LOAD_STALE_TIME,
         },
         {
-            queryKey: state.isPrivateWidget ? privateWidgetLoadSumQueryKey : publicWidgetLoadSumQueryKey,
-            queryFn: () => fetchWidgetSumData(state.isPrivateWidget ? privateWidgetLoadSumParams.value : publicWidgetLoadSumParams.value),
+            queryKey: loadSumKey,
+            queryFn: loadSumFetcher,
             enabled: computed<boolean>(() => {
                 const widgetActive = props.widgetState !== 'INACTIVE';
                 const dataTableReady = !!state.dataTable;
@@ -260,11 +210,12 @@ const queryResults = useQueries({
 
 const widgetLoading = computed<boolean>(() => queryResults.value?.[0].isFetching || state.dataTableLoading);
 const errorMessage = computed<string>(() => {
-    if (!state.dataTable) return i18n.t('COMMON.WIDGETS.NO_DATA_TABLE_ERROR_MESSAGE');
+    if (!state.dataTable) return i18n.t('COMMON.WIDGETS.NO_DATA_TABLE_ERROR_MESSAGE') as string;
     return queryResults.value?.[0].error?.message as string;
 });
 
 
+// Widget Load Refined Data
 const refinedData = computed<WidgetLoadResponse|null>(() => {
     const data = queryResults.value?.[0].data;
     const totalData = queryResults.value?.[1].data;
@@ -272,7 +223,7 @@ const refinedData = computed<WidgetLoadResponse|null>(() => {
     if (!data) return null;
 
     let refinedResults: TableDataItem[] = [];
-    (data.results ?? []).forEach((d) => {
+    (data?.results ?? []).forEach((d) => {
         // Basic Data
         const dataItem = { ...d };
 
@@ -308,8 +259,8 @@ watch(() => props.dataTableId, async (newDataTableId) => {
     if (!newDataTableId) return;
     state.dataTableLoading = true;
     const fetcher = state.isPrivateWidget
-        ? api.privateDataTableAPI.get
-        : api.publicDataTableAPI.get;
+        ? privateDataTableAPI.get
+        : publicDataTableAPI.get;
     try {
         state.dataTable = await fetcher({ data_table_id: newDataTableId });
     } catch (e) {

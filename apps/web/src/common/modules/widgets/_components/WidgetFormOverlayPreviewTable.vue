@@ -80,6 +80,7 @@ const state = reactive({
     isPrivate: computed(() => storeState.selectedDataTableId?.startsWith('private')),
     selectedDataTable: computed<DataTableModel|undefined>(() => dataTableList.value.find((d) => d.data_table_id === storeState.selectedDataTableId)),
     data: computed<DataTableLoadResponse | null>(() => queryResult?.data?.value || null),
+    _data: computed<DataTableLoadResponse | null>(() => queryResult?.query?.data || null),
     labelFields: computed<string[]>(() => (dataTableLoading.value === true ? [] : sortWidgetTableFields(Object.keys(state.selectedDataTable?.labels_info ?? {})))),
     dataFields: computed<string[]>(() => (dataTableLoading.value === true ? [] : sortWidgetTableFields(Object.keys(state.selectedDataTable?.data_info ?? {})))),
     dataInfo: computed<DataInfo|undefined>(() => state.selectedDataTable?.data_info),
@@ -252,13 +253,14 @@ const queryResult = useDataTableLoadQuery({
         data_table_id: storeState.selectedDataTableId as string,
         granularity: state.selectedGranularity,
         sort: state.sortBy,
-        page: state.page,
+        // page: state.page,
         vars: refinedVars.value,
     })),
+    page: computed(() => state.page),
 });
-const dataTableLoading = computed<boolean>(() => queryResult.isLoading.value || queryResult.isFetching.value);
-const isError = computed<boolean>(() => queryResult.isError.value);
-const errorMessage = computed<string>(() => queryResult.error?.value?.message);
+const dataTableLoading = computed<boolean>(() => queryResult.query?.isLoading.value || queryResult.query?.isFetching.value);
+const isError = computed<boolean>(() => queryResult.query?.isError.value);
+const errorMessage = computed<string|undefined>(() => queryResult.query?.error?.value?.message);
 
 
 watch([() => storeState.selectedDataTableId, () => state.selectedDataTable], async ([dataTableId]) => {

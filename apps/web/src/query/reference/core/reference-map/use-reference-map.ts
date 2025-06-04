@@ -2,61 +2,63 @@ import {
     computed,
 } from 'vue';
 
+import { referenceQueryClient as queryClient } from '@/query/clients';
 import { useReferenceQueryKey } from '@/query/query-key/use-reference-query-key';
-import { referenceConfigMap } from '@/query/reference/reference-config';
-import type { ReferenceFetchInfo, ReferenceKeyType } from '@/query/reference/types/reference-type';
+import type { ReferenceKeyType } from '@/query/reference/types/reference-type';
+import { REFERENCE_CONFIG_MAP } from '@/query/resource-query/reference-model/constants/reference-config-map';
+import { useResourceInfo } from '@/query/resource-query/shared/composable/use-resource-info';
 
 import type { ReferenceMap } from '@/store/reference/type';
 
 import { useWatchedQueryCache } from '../common/use-watched-query-cache';
 import { useBatchedReferenceFetch } from './use-batched-reference-fetch';
 
+
 export const useReferenceMap = <T, R extends Record<string, any>>(
     resourceKey: ReferenceKeyType,
-    fetchInfo: ReferenceFetchInfo<T>,
-    transform: (item: T) => R,
+    forceFetch: boolean,
 ) => {
-    const _config = referenceConfigMap[resourceKey];
+    const { config, api } = useResourceInfo(resourceKey);
+    const { transform, only } = REFERENCE_CONFIG_MAP[resourceKey];
 
-    if (!_config) {
+    if (!config) {
         throw new Error(`Invalid reference key - map : ${resourceKey}`);
     }
 
-    const { listFetchFn } = fetchInfo;
     const { key: queryKey } = useReferenceQueryKey(resourceKey);
 
     // Utills
     const getId = (item: T) => {
-        if (!_config.idKey) {
+        if (!config.idKey) {
             throw new Error(`[getId] Invalid resource key: ${resourceKey}`);
         }
-        return item[_config.idKey];
+        return item[config.idKey];
     };
     const batchedFecher = async (ids: string[]) => {
-        if (!_config.idKey) {
+        if (!config.idKey) {
             throw new Error(`[batchedFetcher] Invalid resource key: ${resourceKey}`);
         }
         let params: any = {
             query: {
                 filter: [
                     {
-                        k: _config.idKey,
+                        k: config.idKey,
                         o: 'in',
                         v: ids,
                     },
                 ],
             },
         };
-        if (fetchInfo.only) {
+        if (only) {
             params = {
                 ...params,
                 query: {
                     ...params.query,
-                    only: fetchInfo.only,
+                    only,
                 },
             };
         }
-        const response = await listFetchFn(params);
+        const response = await api.list(params);
         return response.results || [];
     };
 
@@ -78,6 +80,7 @@ export const useReferenceMap = <T, R extends Record<string, any>>(
     const proxyMap = new Proxy({}, {
         get(_, id: string) {
             const cache = _cachedMap.value;
+            if (forceFetch) queryClient.
             if (!(id in cache)) enqueue(id);
             return cache[id];
         },

@@ -1,0 +1,51 @@
+export const RESOURCE_CONFIG_MAP = {
+    project: {
+        name: 'Project',
+        resourceKey: 'project',
+        idKey: 'project_id',
+        nameKey: 'name',
+    },
+    projectGroup: {
+        name: 'Project Group',
+        resourceKey: 'project_group',
+        idKey: 'project_group_id',
+        nameKey: 'name',
+    },
+    app: {
+        name: 'App',
+        resourceKey: 'app',
+        idKey: 'app_id',
+        nameKey: 'name',
+    },
+    role: {
+        name: 'Role',
+        resourceKey: 'role',
+        idKey: 'role_id',
+        nameKey: 'name',
+    },
+    workspace: {
+        name: 'Workspace',
+        resourceKey: 'workspace',
+        idKey: 'workspace_id',
+        nameKey: 'name',
+    },
+    workspaceGroup: {
+        name: 'Workspace Group',
+        resourceKey: 'workspace_group',
+        idKey: 'workspace_group_id',
+        nameKey: 'name',
+    },
+    user: {
+        name: 'User',
+        resourceKey: 'user',
+        idKey: 'user_id',
+        nameKey: 'name',
+    },
+    // user
+    metric: {
+        name: 'Metric',
+        resourceKey: 'metric',
+        idKey: 'metric_id',
+        nameKey: 'name',
+    },
+} as const;
